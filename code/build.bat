@@ -22,3 +22,5 @@ cl %CL_OPTS% %ENTRY_FILE% /I%INC_PATH% /LIBPATH:%RL_LIB_PATH%
 
 POPD
 
+
+REM This line was made in git-learning purposes
