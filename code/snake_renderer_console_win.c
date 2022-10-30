@@ -1,13 +1,21 @@
 #include "snake_renderer_console_win.h"
 
 
-static void console_renderer_init(ConsoleRenderer* renderer)
+static WinConsoleRenderer* console_renderer_alloc()
 {
+    WinConsoleRenderer* renderer = (WinConsoleRenderer*)malloc(sizeof(WinConsoleRenderer));
+    return renderer;
+}
+
+
+static void console_renderer_init(WinConsoleRenderer* renderer)
+{
+    console_cursor_hide(renderer);
     renderer->console_handler = GetStdHandle(STD_OUTPUT_HANDLE);
 }
 
 
-static void console_cursor_hide(ConsoleRenderer* renderer)
+static void console_cursor_hide(WinConsoleRenderer* renderer)
 {
     CONSOLE_CURSOR_INFO cc_info;
     GetConsoleCursorInfo(renderer->console_handler, &cc_info);
@@ -16,7 +24,7 @@ static void console_cursor_hide(ConsoleRenderer* renderer)
 }
 
 
-static void console_cursor_begin_move(ConsoleRenderer* renderer)
+static void console_cursor_begin_move(WinConsoleRenderer* renderer)
 {
     COORD position = { 0, 0 };
     SetConsoleCursorPosition(renderer->console_handler, position);
@@ -25,7 +33,6 @@ static void console_cursor_begin_move(ConsoleRenderer* renderer)
 
 static void console_render_frame(Map* map_frame)
 {
-    //console_cursor_hide();
     for (u16 y = 0; y < map_frame->height; y++)
     {
         for (u16 x = 0; x < map_frame->width; x++)
@@ -66,4 +73,4 @@ static void console_render_frame(Map* map_frame)
         }
         fputc('\n', stdout);
     }
-}
+} 

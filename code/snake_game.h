@@ -26,8 +26,13 @@ include all of the source files
 
 #include "snake_logic.c"
 #include "snake_map.c"
-#include "snake_renderer_console.c"
+
+
+#ifdef GUI_ENABLED
 #include "snake_renderer_raylib.c"
+#else 
+#include "snake_renderer_console_win.c"
+#endif /*GUI_ENABLED*/
 
 
 #endif //SNAKE_GAME_H

@@ -10,8 +10,18 @@ int main(int ArgCount, char* ArgS[])
     
     Map* game_map = map_alloc(screenHeight, screenWidth);
     map_init(game_map);
-    console_render_frame(game_map);
     
+    WinConsoleRenderer* renderer = console_renderer_alloc();
+    console_renderer_init(renderer);
+    //console_cursor_hide(renderer);
+    for (int i = 0; i < 1000; i++)
+    {
+        console_cursor_begin_move(renderer);
+        console_render_frame(game_map);
+        printf("%d\n", i);
+    }
+    
+    system("PAUSE");
     
     /*
     InitWindow(screenWidth, screenHeight, "Snake Game");
