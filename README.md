@@ -31,11 +31,11 @@
 
 ### Hello! I'm snake from this game and I hope I will not be ashamed of the code in this repository...:smile::smile::smile:
 
-:snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake:
-<h1 align="center">
+:snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake:
+
    <img src="https://clipartix.com/wp-content/uploads/2016/03/Snake-clip-art-free-clipart-images.jpeg" width="1000" height="300" alt="my banner">
 </h1>
-:snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake:
+:snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake:
 
 ```c
    puts("I should be writing code instead of messing around with github readme formatting... What a shame...");
