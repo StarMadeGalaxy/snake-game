@@ -12,6 +12,17 @@
 - [ ] Understand how to implement FPS counter 
 > New goals are coming soon...
 
+
+## Acknowledgments
+- [Anna Dostoevskaya](https://github.com/annaDostoevskaya), thank you for your help with some technical issues.
+- [Casey Muratori](https://github.com/cmuratori) creator of [Handmade Hero Youtube Series](https://www.youtube.com/c/MollyRocket), thank you for the inspiration.
+
+
+
+
+
+
+
 <details>
    <summary>
       Knock, knock. Who’s there?
