@@ -22,7 +22,7 @@
 ## Getting Started 
 ### Prerequisites
 
-To build the game, you have to have [Visual Studio](https://visualstudio.microsoft.com/downloads) installed. Once you have installed it, you will need to start a command shell and run "vcvarsall.bat x64" to set up the paths and environment variables for building C/C++ programs from the command line.
+To build the game, you have to have [Visual Studio](https://visualstudio.microsoft.com/downloads) installed. Once you have installed it, you will need to start a command shell and run `vcvarsall.bat x64` to set up the paths and environment variables for building C/C++ programs from the command line.
 
 ### Installation
 1. Clone the repo
