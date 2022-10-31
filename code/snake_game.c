@@ -13,7 +13,7 @@ int main(int ArgCount, char* ArgS[])
     
     WinConsoleRenderer* renderer = console_renderer_alloc();
     console_renderer_init(renderer);
-    //console_cursor_hide(renderer);
+    
     for (int i = 0; i < 1000; i++)
     {
         console_cursor_begin_move(renderer);

@@ -10,8 +10,8 @@ static WinConsoleRenderer* console_renderer_alloc()
 
 static void console_renderer_init(WinConsoleRenderer* renderer)
 {
-    console_cursor_hide(renderer);
     renderer->console_handler = GetStdHandle(STD_OUTPUT_HANDLE);
+    console_cursor_hide(renderer);
 }
 
 

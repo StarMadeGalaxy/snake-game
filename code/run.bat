@@ -1,9 +1,19 @@
-@echo off
+@ECHO OFF
 
-pushd ..\build
+CD.. 
 
-PATH = P:\C\snake_game\thirdparty\raylib\bin;%PATH%
+SET SRC=%cd%
 
-start snake_game.exe
+SET RL_DLL_PATH=%SRC%\thirdparty\raylib\bin
 
-popd;
+:: Recently I came up with this solution.
+:: Is there any way to specify dll's locations to the executable?
+PATH=%RL_DLL_PATH%;%PATH%
+
+PUSHD build
+
+START snake_game.exe
+
+POPD
+
+CD code

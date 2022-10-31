@@ -12,6 +12,8 @@
 - [ ] Understand how to implement FPS counter 
 - [ ] Be able to switch between GUI and NON-GUI mode
 - [ ] Snake should be implemented as a linked list
+- [ ] Separate snake game logic and the renderer
+- [ ] Load renderer dynamically
 > New goals are coming soon...
 
 
@@ -55,9 +57,11 @@ To build the game, you have to have [Visual Studio](https://visualstudio.microso
 </h1>
 :snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake::snake:
 
-```c
+```c++
    puts("I should be writing code instead of messing around with github readme formatting... What a shame...");
+   std::string nastya_radkova = "Lovely girl";
 ```
 
 </p>
 </details>
+
