@@ -1,21 +1,21 @@
 #include "snake_renderer_console_win.h"
 
 
-static WinConsoleRenderer* console_renderer_alloc()
+RCW_API function WinConsoleRenderer* console_renderer_alloc()
 {
     WinConsoleRenderer* renderer = (WinConsoleRenderer*)malloc(sizeof(WinConsoleRenderer));
     return renderer;
 }
 
 
-static void console_renderer_init(WinConsoleRenderer* renderer)
+RCW_API function void console_renderer_init(WinConsoleRenderer* renderer)
 {
     renderer->console_handler = GetStdHandle(STD_OUTPUT_HANDLE);
     console_cursor_hide(renderer);
 }
 
 
-static void console_cursor_hide(WinConsoleRenderer* renderer)
+RCW_API function void console_cursor_hide(WinConsoleRenderer* renderer)
 {
     CONSOLE_CURSOR_INFO cc_info;
     GetConsoleCursorInfo(renderer->console_handler, &cc_info);
@@ -24,14 +24,14 @@ static void console_cursor_hide(WinConsoleRenderer* renderer)
 }
 
 
-static void console_cursor_begin_move(WinConsoleRenderer* renderer)
+RCW_API function void console_cursor_begin_move(WinConsoleRenderer* renderer)
 {
     COORD position = { 0, 0 };
     SetConsoleCursorPosition(renderer->console_handler, position);
 }
 
 
-static void console_render_frame(Map* map_frame)
+RCW_API function void console_render_frame(Map* map_frame)
 {
     for (u16 y = 0; y < map_frame->height; y++)
     {
