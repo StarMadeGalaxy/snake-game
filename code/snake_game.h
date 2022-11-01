@@ -17,7 +17,7 @@
 NOTE(Venci): 
 I'm not sure if I should include all of the
 headers files here. I'm just trying to get the unity 
-build done. The way i used to build thing is by including
+build done. The way i used to build things is by including
 header to the corresponding source file. So I'm about to 
   accomplish the same in this project, but here I'm going to
 include all of the source files

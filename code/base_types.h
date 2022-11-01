@@ -20,6 +20,7 @@ typedef double r64;
 
 
 #define function static
+#define internal static
 #define global static
 #define local static
 
