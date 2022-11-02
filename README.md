@@ -59,7 +59,6 @@ To build the game, you have to have [Visual Studio](https://visualstudio.microso
 
 ```c++
    puts("I should be writing code instead of messing around with github readme formatting... What a shame...");
-   std::string nastya_radkova = "Lovely girl";
 ```
 
 </p>
