@@ -2,11 +2,6 @@
 #include <Windows.h>
 
 
-#define VK_W 0x57
-#define VK_A 0x41
-#define VK_S 0x53
-#define VK_D 0x44
-
 #pragma warning( disable : 4554 )
 
 int main(int ArgCount, char* ArgS[])
@@ -66,4 +61,3 @@ int main(int ArgCount, char* ArgS[])
     map_free(game_map);
     return 0;
 }
-

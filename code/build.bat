@@ -20,6 +20,10 @@ IF NOT EXIST bulid MKDIR build
 
 PUSHD build
 
+:: Compile renderer as .dll
+:: cl %CL_OPTS% 
+
+:: Compile and link the game
 cl %CL_OPTS% %ENTRY_FILE% /I%INC_PATH% /LIBPATH:%RL_LIB_PATH% /link %COMMON_LINK_FLAGS%
 
 POPD

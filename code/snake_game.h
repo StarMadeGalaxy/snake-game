@@ -24,11 +24,14 @@ include all of the source files
 */
 
 
+#include "snake_game_update.c"
 #include "snake_logic.c"
 #include "snake_map.c"
 
 
-#ifdef GUI_ENABLED
+
+
+#if defined(GUI_ENABLED)
 #include "snake_renderer_raylib.c"
 #else 
 #include "snake_renderer_console_win.c"

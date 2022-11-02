@@ -11,6 +11,7 @@
 #include <conio.h>
 
 #include "snake_map.h"
+#include "snake_game_platform.h"
 /* 
 NOTE(Venci):
 There's probably another way without including snake_map.h.
@@ -19,14 +20,7 @@ and concise way. e.g. pushcommand, virual machine idk...
  */
 
 // TODO(Venci): build renderer as dll in learning purposes
-#define RCW_API /*__declspec(dllexport)*/
-
-/* keyboard virtual keys for GetAsyncKeyState */
-#define VK_W 0x57
-#define VK_A 0x41
-#define VK_S 0x53
-#define VK_D 0x44
-
+// #define RCW_API /*__declspec(dllexport)*/
 
 /*
 NOTE(Venci): 
@@ -40,7 +34,6 @@ Because it's definitely not the last project in my entire life.
 */
 
 
-
 typedef struct WinConsoleRenderer
 {
     HANDLE* console_handler;
@@ -48,13 +41,15 @@ typedef struct WinConsoleRenderer
 } WinConsoleRenderer;
 
 
-typedef enum console_renderer_commands
+typedef enum ConsoleRendererCommands
 {
+    MOVE_CURSOR_BEGIN,
+    CURSOR_HIDE,
+    CLEAR_FRAME,
     RENDER_FRAME
-} console_renderer_commands;
+} ConsoleRendererCommands;
 
 
-RCW_API internal void console_input();
 RCW_API internal void console_cursor_hide(WinConsoleRenderer* renderer);
 RCW_API internal void console_cursor_begin_move(WinConsoleRenderer* renderer);
 RCW_API internal void console_render_frame(Map* map_frame);
