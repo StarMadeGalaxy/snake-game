@@ -67,6 +67,8 @@ typedef struct WinConsoleRenderer
 } WinConsoleRenderer;
 
 
+#define RENDER_THROUGH_RENDERER
+
 RCW_API internal u16 console_is_key_pressed(u32 virtual_key_code);
 RCW_API internal void console_cursor_hide(WinConsoleRenderer* renderer);
 RCW_API internal void console_cursor_begin_move(WinConsoleRenderer* renderer);

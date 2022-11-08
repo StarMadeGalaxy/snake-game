@@ -6,6 +6,8 @@
 
 
 internal void game_render_update(GameInput* input,
+                                 Snake* snake,
+                                 Map* game_map,
                                  CURRENT_RENDERER* renderer)
 {
     if (input->keyboard_keys[KEYBOARD_W])

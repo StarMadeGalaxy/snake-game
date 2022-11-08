@@ -59,15 +59,12 @@ WriteConsoleOutputCharacterA(hConsole, screen, nScreenWidth * nScreenHeight, { 0
 #endif
 
 
-#define RENDER_THROUGH_RENDERER
-#define RENDER_THROUGH_MAP
-#undef RENDER_THROUGH_MAP
+
 
 internal void console_render_frame(WinConsoleRenderer* renderer/*Map* map_frame*/)
 {
 #if defined(RENDER_THROUGH_RENDERER)
     
-#endif /*defined(RENDER_THROUGH_RENDERER)*/
     COORD screen_buffer_first_cell;
     screen_buffer_first_cell.X = 0;
     screen_buffer_first_cell.Y = 0;
@@ -78,8 +75,7 @@ internal void console_render_frame(WinConsoleRenderer* renderer/*Map* map_frame*
                                  screen_buffer_length,
                                  screen_buffer_first_cell,
                                  &renderer->BytesWrittenLastFrame);
-    
-#if defined(RENDER_THROUGH_MAP)
+#elif defined(RENDER_THROUGH_MAP)
     for (u16 y = 0; y < map_frame->height; y++)
     {
         for (u16 x = 0; x < map_frame->width; x++)
@@ -120,5 +116,5 @@ internal void console_render_frame(WinConsoleRenderer* renderer/*Map* map_frame*
         }
         fputc('\n', stdout);
     }
-#endif /*defined(RENDER_THROUGH_MAP)*/
+#endif /*defined(RENDER_THROUGH_RENDERER)*/
 } 

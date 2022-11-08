@@ -3,15 +3,14 @@
 #ifndef SNAKE_LOGIC_H
 #define SNAKE_LOGIC_H
 
-#include <stdlib.h>
 #include "snake_types.h"
 
 
-static u16 get_random_number(u16 low, u16 high);
-static void snake_move(SnakeChunk* head_chunk, ChunkDirection new_direction);
-static void snake_eat(SnakeChunk* head_chunk, MapChunk* food_chunk);
-static void snake_grow(SnakeChunk* head_chunk);
-static void snake_free(SnakeChunk* head_chunk);
+internal u16 get_random_number(u16 low, u16 high);
+internal void snake_move(Snake* snake, ChunkDirection new_direction);
+internal void snake_eat(Snake* snake, MapChunk* food_chunk);
+internal void snake_grow(Snake* snake);
+internal void snake_free(Snake* snake);
 
 
 #endif //SNAKE_LOGIC_H
