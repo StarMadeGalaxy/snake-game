@@ -40,13 +40,13 @@ typedef enum GameKeyState
     BUTTON_DOWN,
     BUTTON_UP,
     
-    BUTTOn_STATES_COUNT
+    BUTTON_STATES_COUNT
 } GameKeyState;
 
 
 typedef struct GameInput
 {
-    GameKeyState KeyboardKeys[KEYBOARD_KEYS_COUNT];
+    GameKeyState keyboard_keys[KEYBOARD_KEYS_COUNT];
 } GameInput;
 
 

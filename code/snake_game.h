@@ -28,7 +28,9 @@ include all of the source files
 #include "snake_logic.c"
 #include "snake_map.c"
 
-
+#if defined(GUI_ENABLED)
+#undef GUI_ENABLED
+#endif /*defined(GUI_ENABLED)*/
 
 
 #if defined(GUI_ENABLED)

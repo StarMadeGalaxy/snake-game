@@ -17,7 +17,7 @@ NOTE(Venci):
 There's probably another way without including snake_map.h.
 Im wondering how could it be implemented in more effective 
 and concise way. e.g. pushcommand, virual machine idk... 
- */
+ *
 
 // TODO(Venci): build renderer as dll in learning purposes
 // #define RCW_API /*__declspec(dllexport)*/
@@ -34,26 +34,44 @@ Because it's definitely not the last project in my entire life.
 */
 
 
+typedef struct WinConsoleRendererCommandsQueue
+{
+    void* commands_queue;
+    
+} WinConsoleRendererCommandsQueue;
+
+
+typedef enum WinConsoleRendererCommand
+{
+    CLEAR_FRAME,
+    RENDER_FRAME,
+    
+    RENDERER_COMMAND_COUNT
+} WinConsoleRendererCommand;
+
+
+typedef struct WinConsoleSize
+{
+    u16 height;
+    u16 width;
+} WinConsoleSize;
+
+
 typedef struct WinConsoleRenderer
 {
-    HANDLE* console_handler;
-    /*void* data;*/
+    WinConsoleRendererCommand commands;
+    WinConsoleSize size; 
+    void* data;
+    HANDLE console_handler;
+    DWORD BytesWrittenLastFrame;
 } WinConsoleRenderer;
 
 
-typedef enum ConsoleRendererCommands
-{
-    MOVE_CURSOR_BEGIN,
-    CURSOR_HIDE,
-    CLEAR_FRAME,
-    RENDER_FRAME
-} ConsoleRendererCommands;
-
-
+RCW_API internal u16 console_is_key_pressed(u32 virtual_key_code);
 RCW_API internal void console_cursor_hide(WinConsoleRenderer* renderer);
 RCW_API internal void console_cursor_begin_move(WinConsoleRenderer* renderer);
-RCW_API internal void console_render_frame(Map* map_frame);
-RCW_API internal void console_renderer_init(WinConsoleRenderer* renderer);
+RCW_API internal void console_render_frame(WinConsoleRenderer* renderer/*Map* map_frame*/);
+RCW_API internal void console_renderer_init(WinConsoleRenderer* renderer, u16 screen_height, u16 screen_width);
 RCW_API internal WinConsoleRenderer* console_renderer_alloc();
 
 /*RCW_API internal void console_render_run_and_update(Snake* snake, Map* map);*/

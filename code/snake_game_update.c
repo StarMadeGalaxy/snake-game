@@ -5,23 +5,22 @@
 #include "base_types.h"
 
 
-
 internal void game_render_update(GameInput* input,
                                  CURRENT_RENDERER* renderer)
 {
-    if (input->KeyboardKeys[KEYBOARD_W])
+    if (input->keyboard_keys[KEYBOARD_W])
     {
         
     }
-    if (input->KeyboardKeys[KEYBOARD_A])
+    if (input->keyboard_keys[KEYBOARD_A])
     {
         
     }
-    if (input->KeyboardKeys[KEYBOARD_S])
+    if (input->keyboard_keys[KEYBOARD_S])
     {
         
     }
-    if (input->KeyboardKeys[KEYBOARD_D])
+    if (input->keyboard_keys[KEYBOARD_D])
     {
         
     }

@@ -25,7 +25,7 @@ typedef double r64;
 #define local static
 
 
-#define MSB(type) (1 << ((sizeof(type)) * 8) - 1)
+#define MSB(type) (1 << ((sizeof(type) * 8) - 1))
 #define BIT_AMOUNT(type) (sizeof(type) * 8)
 
 
