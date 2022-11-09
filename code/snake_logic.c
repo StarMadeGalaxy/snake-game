@@ -13,25 +13,25 @@ internal void snake_move(Snake* snake, ChunkDirection new_direction)
     for (snake->head->hext != NULL)
     {
         switch (chunk.) {
-            case ch_dir::Down:
+            case Down:
             {
                 size_t current_y = chunk.get_y();
                 chunk.set_y(current_y + 1);
                 break;
             }
-            case ch_dir::Up:
+            case Up:
             {
                 size_t current_y = chunk.get_y();
                 chunk.set_y(current_y - 1);
                 break;
             }
-            case ch_dir::Left:
+            case Left:
             {
                 size_t current_x = chunk.get_x();
                 chunk.set_x(current_x - 1);
                 break;
             }
-            case ch_dir::Right:
+            case Right:
             {
                 size_t current_x = chunk.get_x();
                 chunk.set_x(current_x + 1);
@@ -66,7 +66,7 @@ internal void snake_grow(Snake* snake, u32 size)
 {
     /*
 NOTE(Venci): 
-size could be used for bonus food, you eat it and grows by more
+size could be used for bonus food, you eat it and grow by more
 than 1 chunk. 
 TODO(Venci):
 Have to check if there's enough space on the map
@@ -74,20 +74,53 @@ and can we generate food further
 */
     
     SnakeChunk* new_chunk = (SnakeChunk*)malloc(sizeof(SnakeChunk));
+    while(snake->head);
     
+}
+
+
+internal void snake_init(Snake* snake, 
+                         u16 start_x, 
+                         u16 start_y, 
+                         ChunkDirection start_direction)
+{
+    snake->head->direction = start_direction;
+    snake->tail->direction = start_direction;
     
+    snake->head->x = start_x;
+    snake->tail->x = start_x;
+    
+    snake->head->y = start_y;
+    snake->tail->y = start_y;
+    
+    snake->head->type = Head;
+    snake->tail->type = Tail;
+    
+    snake->head->next = NULL;
+    snake->tail->next = NULL;
+    
+    snake->state = Alive;
+}
+
+
+internal Snake* snake_alloc()
+{
+    Snake* new_snake = (Snake*)malloc(sizeof(Snake));
+    new_snake->head = (SnakeChunk*)malloc(sizeof(SnakeChunk));
+    new_snake->tail = (SnakeChunk*)malloc(sizeof(SnakeChunk));
+    return new_snake;
 }
 
 
 internal void snake_free(Snake* snake)
 {
-    SnakeChunk head = snake->head;
-    while (snake->head->next != NULL)
+    SnakeChunk* head = snake->head;
+    while (head->next != NULL)
     {
-        free(snake->head->next);
-        snake->head->next = snake->head->next->next;
+        free(head->next);
+        head->next = head->next->next;
     }
-    free(snake->head);
+    free(head);
     free(snake);
 }
 

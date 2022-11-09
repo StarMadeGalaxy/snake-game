@@ -7,13 +7,32 @@ internal u16 console_is_key_pressed(u32 virtual_key_code)
 }
 
 
-internal WinConsoleRenderer* console_renderer_alloc()
+internal void console_renderer_destroy(WinConsoleRenderer* renderer)
 {
-    WinConsoleRenderer* renderer = (WinConsoleRenderer*)malloc(sizeof(WinConsoleRenderer));
-    return renderer;
+    free(renderer->data);
+    free(renderer);
 }
 
 
+internal WinConsoleRenderer* console_renderer_create(u16 screen_height,
+                                                     u16 screen_width)
+{
+    WinConsoleRenderer* renderer = (WinConsoleRenderer*)malloc(sizeof(WinConsoleRenderer));
+    
+    size_t new_line_number = (size_t)screen_height;
+    size_t data_size = (size_t)screen_height * (size_t)screen_width + new_line_number;
+    renderer->data = malloc(data_size);
+    
+    renderer->console_handler = GetStdHandle(STD_OUTPUT_HANDLE);
+    renderer->size.height = screen_height;
+    renderer->size.width = screen_width;
+    
+    console_cursor_hide(renderer);
+    
+    return renderer;
+}
+
+#if 0 
 internal void console_renderer_init(WinConsoleRenderer* renderer,
                                     u16 screen_height,
                                     u16 screen_width)
@@ -23,7 +42,7 @@ internal void console_renderer_init(WinConsoleRenderer* renderer,
     renderer->size.width = screen_width;
     console_cursor_hide(renderer);
 }
-
+#endif 
 
 internal void console_cursor_hide(WinConsoleRenderer* renderer)
 {
@@ -31,6 +50,22 @@ internal void console_cursor_hide(WinConsoleRenderer* renderer)
     GetConsoleCursorInfo(renderer->console_handler, &cc_info);
     cc_info.bVisible = 0;
     SetConsoleCursorInfo(renderer->console_handler, &cc_info);
+}
+
+
+internal void console_make_frame(WinConsoleRenderer* renderer, Snake* snake, Map* game_map)
+{
+    u16 x;
+    u16 y;
+    
+    for (y = 0; y < game_map->height; y++)
+    {
+        for (x = 0; x < game_map->width; x++)
+        {
+            //renderer->data[];
+        }
+        
+    }
 }
 
 
@@ -61,10 +96,8 @@ WriteConsoleOutputCharacterA(hConsole, screen, nScreenWidth * nScreenHeight, { 0
 
 
 
-internal void console_render_frame(WinConsoleRenderer* renderer/*Map* map_frame*/)
+internal void console_render_frame(WinConsoleRenderer* renderer)
 {
-#if defined(RENDER_THROUGH_RENDERER)
-    
     COORD screen_buffer_first_cell;
     screen_buffer_first_cell.X = 0;
     screen_buffer_first_cell.Y = 0;
@@ -74,8 +107,8 @@ internal void console_render_frame(WinConsoleRenderer* renderer/*Map* map_frame*
                                  renderer->data,
                                  screen_buffer_length,
                                  screen_buffer_first_cell,
-                                 &renderer->BytesWrittenLastFrame);
-#elif defined(RENDER_THROUGH_MAP)
+                                 &renderer->bytes_written_last_frame);
+#if 0
     for (u16 y = 0; y < map_frame->height; y++)
     {
         for (u16 x = 0; x < map_frame->width; x++)
@@ -116,5 +149,5 @@ internal void console_render_frame(WinConsoleRenderer* renderer/*Map* map_frame*
         }
         fputc('\n', stdout);
     }
-#endif /*defined(RENDER_THROUGH_RENDERER)*/
+#endif 
 } 

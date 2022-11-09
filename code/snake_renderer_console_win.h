@@ -63,19 +63,17 @@ typedef struct WinConsoleRenderer
     WinConsoleSize size; 
     void* data;
     HANDLE console_handler;
-    DWORD BytesWrittenLastFrame;
+    DWORD bytes_written_last_frame;
 } WinConsoleRenderer;
 
-
-#define RENDER_THROUGH_RENDERER
 
 RCW_API internal u16 console_is_key_pressed(u32 virtual_key_code);
 RCW_API internal void console_cursor_hide(WinConsoleRenderer* renderer);
 RCW_API internal void console_cursor_begin_move(WinConsoleRenderer* renderer);
-RCW_API internal void console_render_frame(WinConsoleRenderer* renderer/*Map* map_frame*/);
-RCW_API internal void console_renderer_init(WinConsoleRenderer* renderer, u16 screen_height, u16 screen_width);
-RCW_API internal WinConsoleRenderer* console_renderer_alloc();
+RCW_API internal void console_render_frame(WinConsoleRenderer* renderer);
+RCW_API internal void console_renderer_destroy(WinConsoleRenderer* renderer);
+RCW_API internal WinConsoleRenderer* console_renderer_create(u16 screen_height,
+                                                             u16 screen_width);
 
-/*RCW_API internal void console_render_run_and_update(Snake* snake, Map* map);*/
 
 #endif /*SNAKE_RENDERER_CONSOLE_WIN*/

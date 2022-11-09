@@ -14,7 +14,7 @@ typedef enum ChunkDirection
 
 typedef enum ChunkType
 {
-    Head, Body, Food, Border, Space
+    Tail, Head, Body, Food, Border, Space
 } ChunkType;
 
 
@@ -25,14 +25,15 @@ typedef enum SnakeState
 
 
 /* TODO(Venci): Implement key-value data structure to store chunk symbol there */
-#define HEAD_CHAR '@'
-#define BODY_CHAR '*'
-#define FOOD_CHAR '$'
-#define BORDER_CHAR '#'
-#define SPACE_CHAR ' '
+#if !defined(GUI_ENABLED)
+# define HEAD_CHAR '@'
+# define BODY_CHAR '*'
+# define FOOD_CHAR '$'
+# define BORDER_CHAR '#'
+# define SPACE_CHAR ' '
+#endif // defined(GUI_ENABLED)
 
-#ifndef SNAKE_CONSOLE_VERSION
-#endif /* SNAKE_CONSOLE_VERSION */ 
+
 
 
 typedef struct SnakeChunk
@@ -58,6 +59,7 @@ typedef struct Snake
 {
     SnakeChunk* head;
     SnakeChunk* tail;
+    SnakeState state;
 } Snake;
 
 

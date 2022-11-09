@@ -19,8 +19,12 @@ to the renderer? Or maybe do it directly?
     Map* game_map = map_alloc(screen_height, screen_width);
     map_init(game_map);
     
-    WinConsoleRenderer* renderer = console_renderer_alloc();
-    console_renderer_init(renderer, screen_height, screen_width);
+    Snake* snake = snake_alloc();
+    snake_init(snake, (u16)(screen_width / 2), (u16)(screen_height / 2), None);
+    
+#if !defined(GUI_ENABLED)
+    WinConsoleRenderer* renderer = console_renderer_create(screen_height, screen_width);
+#endif // !defined(GUI_ENABLED)
     
     GameInput game_input;
     
@@ -29,38 +33,27 @@ to the renderer? Or maybe do it directly?
     {
 #if !defined(GUI_ENABLED)
         
-        local int test_var = 0;
-        if (test_var >= 100)
-        {
-            test_var = 0;
-        }
-        
-        console_cursor_begin_move(renderer);
-        console_render_frame(renderer);
+        console_cursor_begin_move(renderer);;
         
         if (console_is_key_pressed((u32)VK_W))
         {
             game_input.keyboard_keys[KEYBOARD_W] = BUTTON_UP;
-            fprintf(stdout, "W key pressed %d\n          ", test_var);
         }
-        else if (console_is_key_pressed((u32)VK_A))
+        if (console_is_key_pressed((u32)VK_A))
         {
             game_input.keyboard_keys[KEYBOARD_A] = BUTTON_UP;
-            fprintf(stdout, "A key pressed %d\n          ", test_var);
         }
-        else if (console_is_key_pressed((u32)VK_S))
+        if (console_is_key_pressed((u32)VK_S))
         {
             game_input.keyboard_keys[KEYBOARD_S] = BUTTON_UP;
-            fprintf(stdout, "S key pressed %d\n           ", test_var);
         }
-        else if (console_is_key_pressed((u32)VK_D))
+        if (console_is_key_pressed((u32)VK_D))
         {
             game_input.keyboard_keys[KEYBOARD_D] = BUTTON_UP;
-            fprintf(stdout, "D key pressed %d\n"           , test_var);
         }
-        else if (console_is_key_pressed((u32)VK_ESCAPE))
+        if (console_is_key_pressed((u32)VK_ESCAPE))
         {
-            fputs("Bye!                         \n", stdout);
+            fputs("[Bye!]\n", stdout);
             break;
         }
         
@@ -68,28 +61,27 @@ to the renderer? Or maybe do it directly?
         {
             game_input.keyboard_keys[KEYBOARD_W] = BUTTON_DOWN;
         }
-        else if (!console_is_key_pressed((u32)VK_A))
+        if (!console_is_key_pressed((u32)VK_A))
         {
             game_input.keyboard_keys[KEYBOARD_A] = BUTTON_DOWN;
         }
-        else if (!console_is_key_pressed((u32)VK_S))
+        if (!console_is_key_pressed((u32)VK_S))
         {
             game_input.keyboard_keys[KEYBOARD_S] = BUTTON_DOWN;
         }
-        else if (!console_is_key_pressed((u32)VK_D))
+        if (!console_is_key_pressed((u32)VK_D))
         {
             game_input.keyboard_keys[KEYBOARD_D] = BUTTON_DOWN;
         }
         
-        /*game_render_update(game_input, );*/
+        game_render_update(&game_input, snake, game_map, renderer);
         
-        
-        test_var++;
 #endif /* !defined(GUI_ENABLED)*/
+        Sleep(100);
     }
-    system("PAUSE");
+    //system("PAUSE");
     
-#if 0
+#if defined(GUI_ENABLED)
     InitWindow(screenWidth, screenHeight, "Snake Game");
     SetTargetFPS(60);               
     while (!WindowShouldClose())    
@@ -98,8 +90,10 @@ to the renderer? Or maybe do it directly?
         ClearBackground(RAYWHITE);
         EndDrawing();
         CloseWindow();       
-#endif
-        map_free(game_map);
-        return 0;
     }
+#endif // defined(GUI_ENABLED)
+    map_free(game_map);
+    snake_free(snake);
     
+    return 0;
+}
