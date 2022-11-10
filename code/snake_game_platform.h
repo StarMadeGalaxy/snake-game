@@ -9,20 +9,6 @@
 #define VK_S 0x53
 #define VK_D 0x44
 
-/* R.enderer C.onsole W.in */
-#define RCW_API /*__declspec(dllexport)*/
-/* R.enderer R.ayL.ib  */
-#define RRL_API /*__declspec(dllexport)*/
-
-
-#if defined(GUI_ENABLED)
-# include "snake_renderer_raylib.h"
-# define CURRENT_RENDERER RaylibRenderer
-#else 
-# include "snake_renderer_console_win.h"
-# define CURRENT_RENDERER WinConsoleRenderer
-#endif /* defined(GUI_ENABLED) */
-
 
 typedef enum InputKeyboardKeys
 {

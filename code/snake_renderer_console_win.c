@@ -9,7 +9,7 @@ internal u16 console_is_key_pressed(u32 virtual_key_code)
 
 internal void console_renderer_destroy(WinConsoleRenderer* renderer)
 {
-    free(renderer->data);
+    free(renderer->frame_data);
     free(renderer);
 }
 
@@ -21,14 +21,13 @@ internal WinConsoleRenderer* console_renderer_create(u16 screen_height,
     
     size_t new_line_number = (size_t)screen_height;
     size_t data_size = (size_t)screen_height * (size_t)screen_width + new_line_number;
-    renderer->data = malloc(data_size);
     
+    renderer->frame_data = (CONSOLE_FRAME_TYPE*)malloc(data_size * sizeof(CONSOLE_FRAME_TYPE));
     renderer->console_handler = GetStdHandle(STD_OUTPUT_HANDLE);
     renderer->size.height = screen_height;
-    renderer->size.width = screen_width;
+    renderer->size.width = screen_width + 1;
     
     console_cursor_hide(renderer);
-    
     return renderer;
 }
 
@@ -53,18 +52,36 @@ internal void console_cursor_hide(WinConsoleRenderer* renderer)
 }
 
 
-internal void console_make_frame(WinConsoleRenderer* renderer, Snake* snake, Map* game_map)
+internal void console_make_frame(WinConsoleRenderer* renderer, 
+                                 Snake* snake, 
+                                 Map* game_map)
 {
+    // NOTE(Venci): renderer size coord mapped to game_map
+    
     u16 x;
     u16 y;
     
-    for (y = 0; y < game_map->height; y++)
+    for (y = 0; y < game_map->height; y++) 
     {
-        for (x = 0; x < game_map->width; x++)
+        for (x = 0; x < game_map->width; x++) 
         {
-            //renderer->data[];
+            u32 index = y * renderer->size.width + x;
+            
+            switch(get_map_chunk(game_map, x, y)->type) 
+            {
+                case Space:
+                {
+                    renderer->frame_data[index] = (CONSOLE_FRAME_TYPE)SPACE_CHAR;
+                    break;
+                }
+                case Border:
+                {
+                    renderer->frame_data[index] = (CONSOLE_FRAME_TYPE)BORDER_CHAR;
+                    break;
+                }
+            }
         }
-        
+        renderer->frame_data[y * renderer->size.width + x] = '\n';
     }
 }
 
@@ -104,7 +121,7 @@ internal void console_render_frame(WinConsoleRenderer* renderer)
     DWORD screen_buffer_length = renderer->size.height * renderer->size.width;
     
     WriteConsoleOutputCharacterA(renderer->console_handler,
-                                 renderer->data,
+                                 renderer->frame_data,
                                  screen_buffer_length,
                                  screen_buffer_first_cell,
                                  &renderer->bytes_written_last_frame);

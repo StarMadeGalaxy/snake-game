@@ -12,3 +12,6 @@
 
 # Build directory
 build/
+
+CommandLineFPS.cpp
+cpp_snake.cpp

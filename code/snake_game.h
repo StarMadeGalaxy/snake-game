@@ -24,20 +24,25 @@ include all of the source files
 */
 
 
-#include "snake_game_update.c"
-#include "snake_logic.c"
-#include "snake_map.c"
-
-#if defined(GUI_ENABLED)
-#undef GUI_ENABLED
+#if !defined(GUI_ENABLED)
+typedef char CONSOLE_FRAME_TYPE;
 #endif /*defined(GUI_ENABLED)*/
 
 
 #if defined(GUI_ENABLED)
-#include "snake_renderer_raylib.c"
-#else 
-#include "snake_renderer_console_win.c"
-#endif /*GUI_ENABLED*/
+# define RRL_API /*__declspec(dllexport)*/ /* (R)enderer (R)ay(L)ib  */
+# define CURRENT_RENDERER RaylibRenderer
+# include "snake_renderer_raylib.c"
+#else
+# define RCW_API /*__declspec(dllexport)*/ /* (R)enderer (C)onsole (W)in */
+# define CURRENT_RENDERER WinConsoleRenderer
+# include "snake_renderer_console_win.c"
+#endif /*define(GUI_ENABLED)*/
+
+
+#include "snake_game_update.c"
+#include "snake_logic.c"
+#include "snake_map.c"
 
 
 #endif //SNAKE_GAME_H

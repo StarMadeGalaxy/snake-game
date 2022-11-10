@@ -52,6 +52,7 @@ typedef enum WinConsoleRendererCommand
 
 typedef struct WinConsoleSize
 {
+    // NOTE(Venci): Size of the actual frame to render
     u16 height;
     u16 width;
 } WinConsoleSize;
@@ -61,7 +62,7 @@ typedef struct WinConsoleRenderer
 {
     WinConsoleRendererCommand commands;
     WinConsoleSize size; 
-    void* data;
+    CONSOLE_FRAME_TYPE* frame_data;
     HANDLE console_handler;
     DWORD bytes_written_last_frame;
 } WinConsoleRenderer;

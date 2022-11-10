@@ -18,7 +18,6 @@ typedef unsigned long long u64;
 typedef float r32;
 typedef double r64;
 
-
 #define function static
 #define internal static
 #define global static
