@@ -24,8 +24,10 @@ include all of the source files
 */
 
 
-#if !defined(GUI_ENABLED)
+#if !defined(GUI_ENABLED) && !defined(UNICODE_ENABLED)
 typedef char CONSOLE_FRAME_TYPE;
+#elif !defined(GUI_ENABLED) && defined(UNICODE_ENABLED)
+typedef wchar_t CONSOLE_FRAME_TYPE;
 #endif /*defined(GUI_ENABLED)*/
 
 

@@ -37,7 +37,6 @@ Because it's definitely not the last project in my entire life.
 typedef struct WinConsoleRendererCommandsQueue
 {
     void* commands_queue;
-    
 } WinConsoleRendererCommandsQueue;
 
 
@@ -62,9 +61,8 @@ typedef struct WinConsoleRenderer
 {
     WinConsoleRendererCommand commands;
     WinConsoleSize size; 
-    CONSOLE_FRAME_TYPE* frame_data;
+    void* frame_data;
     HANDLE console_handler;
-    DWORD bytes_written_last_frame;
 } WinConsoleRenderer;
 
 

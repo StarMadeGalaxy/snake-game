@@ -16,6 +16,7 @@ typedef enum InputKeyboardKeys
     KEYBOARD_A,
     KEYBOARD_S,
     KEYBOARD_D,
+    KEYBOARD_SPACE,
     
     KEYBOARD_KEYS_COUNT
 } InputKeyboardKeys;

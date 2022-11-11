@@ -3,6 +3,7 @@
 
 #include "snake_game_platform.h"
 #include "base_types.h"
+#include "snake_logic.h"
 
 
 internal void game_render_update(GameInput* input,
@@ -10,24 +11,36 @@ internal void game_render_update(GameInput* input,
                                  Map* game_map,
                                  CURRENT_RENDERER* renderer)
 {
+#if defined(DEBUG)
+    if (input->keyboard_keys[KEYBOARD_SPACE])
+    {
+        snake->head->direction = None;
+    }
+#endif // defined(DEBUG)
     if (input->keyboard_keys[KEYBOARD_W])
     {
-        
+        snake->head->direction = Up;
     }
     if (input->keyboard_keys[KEYBOARD_A])
     {
-        
+        snake->head->direction = Left;
     }
     if (input->keyboard_keys[KEYBOARD_S])
     {
-        
+        snake->head->direction = Down;
     }
     if (input->keyboard_keys[KEYBOARD_D])
     {
-        
+        snake->head->direction = Right;
     }
     
+    if (snake->head->direction != None)
+        snake_move(snake);
+    
+    console_cursor_begin_move(renderer);
+    console_make_frame(renderer, snake, game_map);
     console_render_frame(renderer);
+    
 #if defined(DEBUG_MODE)
     local int test_var;
     
@@ -57,7 +70,15 @@ internal void game_render_update(GameInput* input,
     else if (input->keyboard_keys[KEYBOARD_D] == BUTTON_DOWN)
         fprintf(stdout, "D key is unpressed %d               \n", test_var);
     
-    fprintf(stdout, "Last frame bytes written: %d               \n", renderer->bytes_written_last_frame);
+    // SPACE
+    if (input->keyboard_keys[KEYBOARD_SPACE] == BUTTON_UP)
+        fprintf(stdout, "Space key is pressed %d                 \n", test_var);
+    else if (input->keyboard_keys[KEYBOARD_SPACE] == BUTTON_DOWN)
+        fprintf(stdout, "Space key is unpressed %d               \n", test_var);
+    
+    fprintf(stdout, "Snake direction: %d\n", snake->head->direction);
+    
+    
     test_var++;
 #endif // defined(DEBUG_MODE) 
 }

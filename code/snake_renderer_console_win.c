@@ -19,29 +19,17 @@ internal WinConsoleRenderer* console_renderer_create(u16 screen_height,
 {
     WinConsoleRenderer* renderer = (WinConsoleRenderer*)malloc(sizeof(WinConsoleRenderer));
     
-    size_t new_line_number = (size_t)screen_height;
-    size_t data_size = (size_t)screen_height * (size_t)screen_width + new_line_number;
+    size_t data_size = (size_t)screen_height * (size_t)screen_width;
     
     renderer->frame_data = (CONSOLE_FRAME_TYPE*)malloc(data_size * sizeof(CONSOLE_FRAME_TYPE));
     renderer->console_handler = GetStdHandle(STD_OUTPUT_HANDLE);
     renderer->size.height = screen_height;
-    renderer->size.width = screen_width + 1;
+    renderer->size.width = screen_width;
     
     console_cursor_hide(renderer);
     return renderer;
 }
 
-#if 0 
-internal void console_renderer_init(WinConsoleRenderer* renderer,
-                                    u16 screen_height,
-                                    u16 screen_width)
-{
-    renderer->console_handler = GetStdHandle(STD_OUTPUT_HANDLE);
-    renderer->size.height = screen_height;
-    renderer->size.width = screen_width;
-    console_cursor_hide(renderer);
-}
-#endif 
 
 internal void console_cursor_hide(WinConsoleRenderer* renderer)
 {
@@ -52,18 +40,17 @@ internal void console_cursor_hide(WinConsoleRenderer* renderer)
 }
 
 
+#define MAKE_MAP
+#define MAKE_SNAKE
 internal void console_make_frame(WinConsoleRenderer* renderer, 
                                  Snake* snake, 
                                  Map* game_map)
 {
-    // NOTE(Venci): renderer size coord mapped to game_map
-    
-    u16 x;
-    u16 y;
-    
-    for (y = 0; y < game_map->height; y++) 
+    // NOTE(Venci): filling renderer data with map
+#if defined(MAKE_MAP)
+    for (u16 y = 0; y < game_map->height; y++) 
     {
-        for (x = 0; x < game_map->width; x++) 
+        for (u16 x = 0; x < game_map->width; x++) 
         {
             u32 index = y * renderer->size.width + x;
             
@@ -71,18 +58,51 @@ internal void console_make_frame(WinConsoleRenderer* renderer,
             {
                 case Space:
                 {
-                    renderer->frame_data[index] = (CONSOLE_FRAME_TYPE)SPACE_CHAR;
+                    ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = SPACE_CHAR;
                     break;
                 }
                 case Border:
                 {
-                    renderer->frame_data[index] = (CONSOLE_FRAME_TYPE)BORDER_CHAR;
+                    ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = (CONSOLE_FRAME_TYPE)BORDER_CHAR;
                     break;
                 }
             }
         }
-        renderer->frame_data[y * renderer->size.width + x] = '\n';
     }
+#endif // defined(MAKE_MAP)
+#if defined(MAKE_SNAKE)
+    // NOTE(Venci): filling renderer data with snake
+    u32 index;
+    while (snake->head->next != NULL)
+    {
+        index = snake->head->y * renderer->size.width + snake->head->x;
+        switch (snake->head->type)
+        {
+            case Body:
+            {
+                ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = BODY_CHAR;
+            }
+            case Head:
+            {
+                ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = HEAD_CHAR;
+            }
+        }
+        snake->head = snake->head->next;
+    }
+    index = snake->head->y * renderer->size.width + snake->head->x;
+    
+    switch (snake->head->type)
+    {
+        case Body:
+        {
+            ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = BODY_CHAR;
+        }
+        case Head:
+        {
+            ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = HEAD_CHAR;
+        }
+    }
+#endif // defined(MAKE_SNAKE)
 }
 
 
@@ -93,28 +113,18 @@ internal void console_cursor_begin_move(WinConsoleRenderer* renderer)
 }
 
 
-
-#if 0
-// Display Map
-for (int nx = 0; nx < nMapWidth; nx++)
-{
-    for (int ny = 0; ny < nMapWidth; ny++)
-    {
-        screen[(ny+1)*nScreenWidth + nx] = map[ny * nMapWidth + nx];
-    }
-    screen[((int)fPlayerX+1) * nScreenWidth + (int)fPlayerY] = 'P';
-}
-
-// Display Frame
-screen[nScreenWidth * nScreenHeight - 1] = '\0';
-WriteConsoleOutputCharacterA(hConsole, screen, nScreenWidth * nScreenHeight, { 0,0 }, &dwBytesWritten);
-#endif
-
-
-
-
 internal void console_render_frame(WinConsoleRenderer* renderer)
 {
+    for (u16 y = 0; y < renderer->size.height; y++)
+    {
+        for (u16 x = 0; x < renderer->size.width; x++)
+        {
+            u32 index = y * renderer->size.width + x;
+            fputc(((char*)renderer->frame_data)[index], stdout);
+        }
+        fputc('\n', stdout);
+    }
+#if defined(WINDOWS_SUCKS)
     COORD screen_buffer_first_cell;
     screen_buffer_first_cell.X = 0;
     screen_buffer_first_cell.Y = 0;
@@ -125,46 +135,5 @@ internal void console_render_frame(WinConsoleRenderer* renderer)
                                  screen_buffer_length,
                                  screen_buffer_first_cell,
                                  &renderer->bytes_written_last_frame);
-#if 0
-    for (u16 y = 0; y < map_frame->height; y++)
-    {
-        for (u16 x = 0; x < map_frame->width; x++)
-        {
-            switch (get_map_chunk(map_frame, x, y)->type)
-            {
-                case Border:
-                {
-                    fputc(BORDER_CHAR, stdout);
-                    break;
-                }
-                case Space:
-                {
-                    fputc(SPACE_CHAR, stdout);
-                    break;
-                }
-                case Head:
-                {
-                    fputc(HEAD_CHAR, stdout);
-                    break;
-                }
-                case Body:
-                {
-                    fputc(BODY_CHAR, stdout);
-                    break;
-                }
-                case Food:
-                {
-                    fputc(FOOD_CHAR, stdout);
-                    break;
-                }
-                default:
-                {
-                    fputc('?', stdout);
-                    break;
-                }
-            }
-        }
-        fputc('\n', stdout);
-    }
-#endif 
+#endif // defined(WINDOWS_SUCKS)
 } 

@@ -6,17 +6,17 @@
 
 
 typedef signed char i8;
-typedef signed short i16;
+typedef signed short int i16;
 typedef signed int i32;
-typedef signed long long i64;
+typedef signed long long int i64;
 
 typedef unsigned char u8;
-typedef unsigned short u16;
+typedef unsigned short int u16;
 typedef unsigned int u32;
-typedef unsigned long long u64;
+typedef unsigned long long int u64;
 
-typedef float r32;
-typedef double r64;
+typedef float f32;
+typedef double f64;
 
 #define function static
 #define internal static
@@ -26,7 +26,9 @@ typedef double r64;
 #define MSB(type) (1 << ((sizeof(type) * 8) - 1))
 #define BIT_AMOUNT(type) (sizeof(type) * 8)
 #define RAND_RANGE(low, high) (((u16)rand() % (high - low + 1)) + low)
-#define COORD_INDEX(x, y) ()
+#define COORD_INDEX(x, y, width) (y * width + x)
+
+#define Assert(expression)
 
 #if defined(__cplusplus) && defined(_BITSET_)
 # define BITSET_MSB(type) (std::bitset<(BIT_AMOUNT(type))>(MSB(type)))

@@ -9,13 +9,9 @@ int main(int arg_count, char* arg_array[])
 {
     srand((u32)time(NULL)); 
     
-    const u16 screen_width = 10;
+    const u16 screen_width = 25;
     const u16 screen_height = 15;
-    /*
-NOTE(Venci):
- Should i pass screen_buffer through the game_map->ptr
-to the renderer? Or maybe do it directly?
-    */
+    
     Map* game_map = map_alloc(screen_height, screen_width);
     map_init(game_map);
     
@@ -24,7 +20,9 @@ to the renderer? Or maybe do it directly?
     
 #if !defined(GUI_ENABLED)
     WinConsoleRenderer* renderer = console_renderer_create(screen_height, screen_width);
+#elif defined(GUI_ENABLED)
 #endif // !defined(GUI_ENABLED)
+    
     
     GameInput game_input;
     
@@ -32,9 +30,6 @@ to the renderer? Or maybe do it directly?
     for (;;)
     {
 #if !defined(GUI_ENABLED)
-        
-        console_cursor_begin_move(renderer);;
-        
         if (console_is_key_pressed((u32)VK_W))
         {
             game_input.keyboard_keys[KEYBOARD_W] = BUTTON_UP;
@@ -51,9 +46,12 @@ to the renderer? Or maybe do it directly?
         {
             game_input.keyboard_keys[KEYBOARD_D] = BUTTON_UP;
         }
+        if (console_is_key_pressed((u32)VK_SPACE))
+        {
+            game_input.keyboard_keys[KEYBOARD_SPACE] = BUTTON_UP;
+        }
         if (console_is_key_pressed((u32)VK_ESCAPE))
         {
-            fputs("[Bye!]\n", stdout);
             break;
         }
         
@@ -72,6 +70,10 @@ to the renderer? Or maybe do it directly?
         if (!console_is_key_pressed((u32)VK_D))
         {
             game_input.keyboard_keys[KEYBOARD_D] = BUTTON_DOWN;
+        }
+        if (!console_is_key_pressed((u32)VK_SPACE))
+        {
+            game_input.keyboard_keys[KEYBOARD_SPACE] = BUTTON_DOWN;
         }
         
         game_render_update(&game_input, snake, game_map, renderer);
@@ -92,8 +94,15 @@ to the renderer? Or maybe do it directly?
         CloseWindow();       
     }
 #endif // defined(GUI_ENABLED)
-    map_free(game_map);
-    snake_free(snake);
     
-    return 0;
+    map_free(game_map);
+    snake_free(&snake);
+    console_renderer_destroy(renderer);
+    
+    if (snake == NULL)
+    {
+        puts("Yeah snake is null relex brev");
+    }
+    system("PAUSE");
+    return EXIT_SUCCESS;
 }

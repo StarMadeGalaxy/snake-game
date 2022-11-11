@@ -8,7 +8,7 @@
 
 typedef enum ChunkDirection
 {
-    Up, Down, Left, Right, None
+    Up, Right, Down, Left, None
 } ChunkDirection;
 
 
@@ -34,14 +34,11 @@ typedef enum SnakeState
 #endif // defined(GUI_ENABLED)
 
 
-
-
 typedef struct SnakeChunk
 {
     ChunkDirection direction;
     ChunkType type;
     struct SnakeChunk* next;
-    /* struct SnakeChunk* prev; */
     u16 x;
     u16 y;
 } SnakeChunk;
@@ -57,9 +54,11 @@ typedef struct MapChunk
 
 typedef struct Snake
 {
+    
     SnakeChunk* head;
     SnakeChunk* tail;
     SnakeState state;
+    u16 speed;
 } Snake;
 
 
