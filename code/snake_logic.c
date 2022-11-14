@@ -9,7 +9,7 @@ internal u16 get_random_number(u16 low, u16 high)
 
 internal void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
 {
-    switch (chunk->type) 
+    switch (chunk->direction) 
     {
         case Down: 
         {
@@ -44,16 +44,15 @@ internal void snake_move(Snake* snake)
         snake_chunk_add_speed(snake->head, snake->speed);
         snake->head = snake->head->next;
     }
-    
-    // When snake moves, chunks at the nodes change 
-    ChunkDirection head_dir;
-    ChunkDirection next_dir;
-    
     snake->head = reserved_head;
+    
+#if defined(SNAKE_ROTATION_ON)
+    // When snake moves, chunks at the nodes change 
+    // TODO(Venci): To avoid access violation we have to check next for NULL
     while (snake->head->next != NULL)
     {
-        head_dir = snake->head->direction;
-        next_dir = snake->head->next->direction;
+        ChunkDirection head_dir = snake->head->direction;
+        ChunkDirection next_dir = snake->head->next->direction;
         
         if (head_dir != next_dir)
         {
@@ -61,6 +60,8 @@ internal void snake_move(Snake* snake)
         }
         snake->head = snake->head->next;
     }
+    snake->head = reserved_head;
+#endif 
 }
 
 
@@ -82,9 +83,13 @@ and can we generate food further
 */
     
     SnakeChunk* new_chunk = (SnakeChunk*)malloc(sizeof(SnakeChunk));
-    while(snake->head->next != NULL);
     
+    if (snake->tail == NULL)
+    {
+        snake->tail = new_chunk;
+    }
 }
+
 
 
 internal void snake_init(Snake* snake, 
@@ -127,7 +132,7 @@ internal void snake_free(Snake** snake)
 }
 
 
-#if defined(DEBUG)
+#if defined(DEBUG_MODE)
 #endif
 
 

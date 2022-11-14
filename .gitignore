@@ -10,6 +10,9 @@
 # Debug files
 *.pdb
 
+# RemedyBG files
+*.rdbg
+
 # Build directory
 build/
 

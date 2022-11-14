@@ -46,14 +46,12 @@ internal void console_make_frame(WinConsoleRenderer* renderer,
                                  Snake* snake, 
                                  Map* game_map)
 {
-    // NOTE(Venci): filling renderer data with map
-#if defined(MAKE_MAP)
+#if defined(MAKE_MAP)    // NOTE(Venci): filling renderer data with map
     for (u16 y = 0; y < game_map->height; y++) 
     {
         for (u16 x = 0; x < game_map->width; x++) 
         {
             u32 index = y * renderer->size.width + x;
-            
             switch(get_map_chunk(game_map, x, y)->type) 
             {
                 case Space:
@@ -70,12 +68,11 @@ internal void console_make_frame(WinConsoleRenderer* renderer,
         }
     }
 #endif // defined(MAKE_MAP)
-#if defined(MAKE_SNAKE)
-    // NOTE(Venci): filling renderer data with snake
-    u32 index;
-    while (snake->head->next != NULL)
+#if defined(MAKE_SNAKE)    // NOTE(Venci): filling renderer data with snake
+    SnakeChunk* temp_chunk = snake->head;
+    while (snake->head != NULL)
     {
-        index = snake->head->y * renderer->size.width + snake->head->x;
+        u32 index = snake->head->y * renderer->size.width + snake->head->x;
         switch (snake->head->type)
         {
             case Body:
@@ -89,19 +86,7 @@ internal void console_make_frame(WinConsoleRenderer* renderer,
         }
         snake->head = snake->head->next;
     }
-    index = snake->head->y * renderer->size.width + snake->head->x;
-    
-    switch (snake->head->type)
-    {
-        case Body:
-        {
-            ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = BODY_CHAR;
-        }
-        case Head:
-        {
-            ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = HEAD_CHAR;
-        }
-    }
+    snake->head = temp_chunk;
 #endif // defined(MAKE_SNAKE)
 }
 

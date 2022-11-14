@@ -11,7 +11,7 @@ internal void game_render_update(GameInput* input,
                                  Map* game_map,
                                  CURRENT_RENDERER* renderer)
 {
-#if defined(DEBUG)
+#if defined(DEBUG_MODE)
     if (input->keyboard_keys[KEYBOARD_SPACE])
     {
         snake->head->direction = None;
@@ -76,8 +76,13 @@ internal void game_render_update(GameInput* input,
     else if (input->keyboard_keys[KEYBOARD_SPACE] == BUTTON_DOWN)
         fprintf(stdout, "Space key is unpressed %d               \n", test_var);
     
-    fprintf(stdout, "Snake direction: %d\n", snake->head->direction);
-    
+    fprintf(stdout, "snake->head->dn  : %d\n", snake->head->direction);
+    fprintf(stdout, "Snake->head->x   : %d\n", snake->head->x);
+    fprintf(stdout, "snake->head->type: %d\n", snake->head->type);
+    fprintf(stdout, "snake->head->y   : %d\n", snake->head->y);
+    fprintf(stdout, "snake->tail      : %p\n", snake->tail);
+    fprintf(stdout, "snake->head->next: %p\n", snake->head->next);
+    fprintf(stdout, "snake->head      : %p\n", snake->head);
     
     test_var++;
 #endif // defined(DEBUG_MODE) 

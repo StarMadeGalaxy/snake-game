@@ -12,11 +12,11 @@
 
 typedef enum InputKeyboardKeys
 {
+    KEYBOARD_SPACE,
     KEYBOARD_W,
     KEYBOARD_A,
     KEYBOARD_S,
     KEYBOARD_D,
-    KEYBOARD_SPACE,
     
     KEYBOARD_KEYS_COUNT
 } InputKeyboardKeys;

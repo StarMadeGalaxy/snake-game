@@ -8,7 +8,7 @@
 
 typedef enum ChunkDirection
 {
-    Up, Right, Down, Left, None
+    None, Up, Left, Down, Right
 } ChunkDirection;
 
 

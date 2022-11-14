@@ -10,6 +10,7 @@ int main(int arg_count, char* arg_array[])
     srand((u32)time(NULL)); 
     
     const u16 screen_width = 25;
+    
     const u16 screen_height = 15;
     
     Map* game_map = map_alloc(screen_height, screen_width);
@@ -79,7 +80,7 @@ int main(int arg_count, char* arg_array[])
         game_render_update(&game_input, snake, game_map, renderer);
         
 #endif /* !defined(GUI_ENABLED)*/
-        Sleep(100);
+        Sleep(150);
     }
     //system("PAUSE");
     
@@ -94,15 +95,13 @@ int main(int arg_count, char* arg_array[])
         CloseWindow();       
     }
 #endif // defined(GUI_ENABLED)
-    
+#if defined(DEBUG_MODE)
+    if (snake == NULL)
+        puts("Snake is probably freed, at least it has been NULLed");
+    system("PAUSE");
+#endif // defined(DEBUG_MODE)
     map_free(game_map);
     snake_free(&snake);
     console_renderer_destroy(renderer);
-    
-    if (snake == NULL)
-    {
-        puts("Yeah snake is null relex brev");
-    }
-    system("PAUSE");
     return EXIT_SUCCESS;
 }
