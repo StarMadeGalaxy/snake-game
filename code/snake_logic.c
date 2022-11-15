@@ -35,6 +35,42 @@ internal void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
 }
 
 
+internal CollisionType snake_collision_check(Snake* snake, Map* map)
+{
+    // NOTE(Venci): maybe implement a special enum with collision type?
+    CollisionType result;
+    for (u16 map_y = 0; map_y < map->height; map_y++)
+    {
+        for (u16 map_x = 0; map_x < map->width; map_x++)
+        {
+            MapChunk* test_chunk = get_map_chunk(map, snake->head->x, snake->head->y);
+            switch (test_chunk->type)
+            {
+                case Border:
+                {
+                    // NOTE(Venci): I really hope that this is legal goto usage
+                    // i saw usage like that in linux kernel style guide!
+                    result = BORDER_COLLISION;
+                    goto collision_return;
+                }
+            }
+        }
+    }
+    
+    SnakeChunk* temp_head = snake->head;
+    
+    while (snake->head)
+    {
+        
+        snake->head = snake->head->next;
+    }
+    snake->head = temp_head;
+    
+    collision_return:
+    return result;
+}
+
+
 internal void snake_move(Snake* snake)
 {
     SnakeChunk* reserved_head = snake->head;

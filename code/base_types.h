@@ -15,6 +15,8 @@ typedef unsigned short int u16;
 typedef unsigned int u32;
 typedef unsigned long long int u64;
 
+typedef signed char b8;
+
 typedef float f32;
 typedef double f64;
 

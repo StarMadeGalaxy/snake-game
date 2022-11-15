@@ -35,7 +35,23 @@ internal void game_render_update(GameInput* input,
     }
     
     if (snake->head->direction != None)
+    {
         snake_move(snake);
+    }
+    
+    CollisionType snake_collision = snake_collision_check(snake, game_map);
+    
+    switch (snake_collision)
+    {
+        case BORDER_COLLISION:
+        {
+            snake->state = Dead;
+        }
+        case BODY_COLLISION:
+        {
+            snake->state = Dead;
+        }
+    }
     
     console_cursor_begin_move(renderer);
     console_make_frame(renderer, snake, game_map);

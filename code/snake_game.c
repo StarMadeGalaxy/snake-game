@@ -28,7 +28,7 @@ int main(int arg_count, char* arg_array[])
     GameInput game_input;
     
     // NOTE(Venci): this entire file should GUI_ENABLED independent 
-    for (;;)
+    while (snake->state == Alive)
     {
 #if !defined(GUI_ENABLED)
         if (console_is_key_pressed((u32)VK_W))
@@ -47,10 +47,12 @@ int main(int arg_count, char* arg_array[])
         {
             game_input.keyboard_keys[KEYBOARD_D] = BUTTON_UP;
         }
+#if defined(DEBUG_MDOE)
         if (console_is_key_pressed((u32)VK_SPACE))
         {
             game_input.keyboard_keys[KEYBOARD_SPACE] = BUTTON_UP;
         }
+#endif // defined(DEBUG_MODE)
         if (console_is_key_pressed((u32)VK_ESCAPE))
         {
             break;
@@ -72,10 +74,12 @@ int main(int arg_count, char* arg_array[])
         {
             game_input.keyboard_keys[KEYBOARD_D] = BUTTON_DOWN;
         }
+#if defined(DEBUG_MODE)
         if (!console_is_key_pressed((u32)VK_SPACE))
         {
             game_input.keyboard_keys[KEYBOARD_SPACE] = BUTTON_DOWN;
         }
+#endif // defined(DEBUG_MODE)
         
         game_render_update(&game_input, snake, game_map, renderer);
         

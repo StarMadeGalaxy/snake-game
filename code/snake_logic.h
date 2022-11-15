@@ -13,14 +13,11 @@ internal void snake_grow(Snake* snake, u32 size);
 internal void snake_free(Snake** snake);
 internal Snake* snake_alloc();
 internal void snake_add_speed(SnakeChunk* chunk, u16 speed);
+internal CollisionType snake_collision_check(Snake* snake, Map* map);
 internal void snake_init(Snake* snake, 
                          u16 start_x, 
                          u16 start_y,
                          ChunkDirection start_direction);
-//internal void snake_chunk_init(SnakeChunk* chunk,
-//u16 x, 
-//u16 y,
-//ChunkDirection direction);
-//
+
 
 #endif //SNAKE_LOGIC_H

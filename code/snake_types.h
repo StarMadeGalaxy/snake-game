@@ -24,6 +24,12 @@ typedef enum SnakeState
 } SnakeState;
 
 
+typedef enum CollisionType
+{
+    NONE_COLLISION, BORDER_COLLISION, BODY_COLLISION, FOOD_COLLISION
+} CollisionType;
+
+
 /* TODO(Venci): Implement key-value data structure to store chunk symbol there */
 #if !defined(GUI_ENABLED)
 # define HEAD_CHAR '@'
