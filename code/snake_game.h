@@ -37,8 +37,8 @@ typedef wchar_t CONSOLE_FRAME_TYPE;
 # include "snake_renderer_raylib.c"
 #else
 # define RCW_API /*__declspec(dllexport)*/ /* (R)enderer (C)onsole (W)in */
-# define CURRENT_RENDERER WinConsoleRenderer
-# include "snake_renderer_console_win.c"
+# define CURRENT_RENDERER ConsoleRenderer
+# include "snake_renderer_console.c"
 #endif /*define(GUI_ENABLED)*/
 
 

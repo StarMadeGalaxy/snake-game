@@ -1,34 +1,28 @@
 #include "snake_logic.h"
 
 
-internal u16 get_random_number(u16 low, u16 high)
-{
-    return (((u16)rand() % (high - low + 1)) + low); 
-}
-
-
 internal void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
 {
     switch (chunk->direction) 
     {
         case Down: 
         {
-            chunk->y += speed;
+            chunk->coord.y += speed;
             break;
         }
         case Up:
         {
-            chunk->y -= speed;
+            chunk->coord.y -= speed;
             break;
         }
         case Left:
         {
-            chunk->x -= speed;
+            chunk->coord.x -= speed;
             break;
         }
         case Right:
         {
-            chunk->x += speed;
+            chunk->coord.x += speed;
             break;
         }
     }
@@ -37,20 +31,24 @@ internal void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
 
 internal CollisionType snake_collision_check(Snake* snake, Map* map)
 {
-    // NOTE(Venci): maybe implement a special enum with collision type?
     CollisionType result;
     for (u16 map_y = 0; map_y < map->height; map_y++)
     {
         for (u16 map_x = 0; map_x < map->width; map_x++)
         {
-            MapChunk* test_chunk = get_map_chunk(map, snake->head->x, snake->head->y);
+            MapChunk* test_chunk = get_map_chunk(map, snake->head->coord.x, snake->head->coord.y);
             switch (test_chunk->type)
             {
                 case Border:
                 {
                     // NOTE(Venci): I really hope that this is legal goto usage
-                    // i saw usage like that in linux kernel style guide!
+                    // i've seen usage like that in linux kernel style guide!
                     result = BORDER_COLLISION;
+                    goto collision_return;
+                }
+                case Food:
+                {
+                    result = FOOD_COLLISION;
                     goto collision_return;
                 }
             }
@@ -59,9 +57,14 @@ internal CollisionType snake_collision_check(Snake* snake, Map* map)
     
     SnakeChunk* temp_head = snake->head;
     
-    while (snake->head)
+    while (snake->head->next != NULL)
     {
-        
+        if (temp_head->coord.x == snake->head->next->coord.x &&
+            temp_head->coord.y == snake->head->next->coord.y)
+        {
+            result = BODY_COLLISION;
+            break;
+        }
         snake->head = snake->head->next;
     }
     snake->head = temp_head;
@@ -81,29 +84,44 @@ internal void snake_move(Snake* snake)
         snake->head = snake->head->next;
     }
     snake->head = reserved_head;
-    
-#if defined(SNAKE_ROTATION_ON)
-    // When snake moves, chunks at the nodes change 
-    // TODO(Venci): To avoid access violation we have to check next for NULL
-    while (snake->head->next != NULL)
-    {
-        ChunkDirection head_dir = snake->head->direction;
-        ChunkDirection next_dir = snake->head->next->direction;
-        
-        if (head_dir != next_dir)
-        {
-            snake->head->direction = next_dir;
-        }
-        snake->head = snake->head->next;
-    }
-    snake->head = reserved_head;
-#endif 
 }
 
 
-internal void snake_eat(Snake* snake, MapChunk* food_chunk)
+internal void snake_rotate(Snake* snake)
 {
-    ;
+    // NOTE(Venci): Change direction at snake's corners
+    // TODO(Venci): Think and simplify this code by using doubly-linked snake
+    SnakeChunk* reserved_head = snake->head;
+    u32 snake_length = 0;
+    
+    while (snake->head != NULL)
+    {
+        snake_length++;
+        snake->head = snake->head->next;
+    }
+    snake->head = reserved_head;
+    
+    SnakeChunk** snake_stack = (SnakeChunk**)malloc(sizeof(SnakeChunk*) * (size_t)snake_length);
+    
+    u32 counter = 0;
+    while (snake->head != NULL)
+    {
+        snake_stack[counter++] = snake->head;
+        snake->head = snake->head->next;
+    }
+    snake->head = reserved_head;
+    
+    for (u32 i = snake_length - 1; i > 0; i--)
+    {
+        SnakeChunk* next_chunk = snake_stack[i];
+        SnakeChunk* prev_chunk = snake_stack[i - 1];
+        
+        if (next_chunk->direction != prev_chunk->direction)
+        {
+            next_chunk->direction = prev_chunk->direction;
+        }
+    }
+    free(snake_stack);
 }
 
 
@@ -118,13 +136,64 @@ Have to check if there's enough space on the map
 and can we generate food further
 */
     
-    SnakeChunk* new_chunk = (SnakeChunk*)malloc(sizeof(SnakeChunk));
+    SnakeChunk* temp_head = snake->head;
+    SnakeChunk* new_tail_chunk;
+    
+    new_tail_chunk = (SnakeChunk*)malloc(sizeof(SnakeChunk));
+    new_tail_chunk->next = NULL;
+    new_tail_chunk->type = Tail;
     
     if (snake->tail == NULL)
     {
-        snake->tail = new_chunk;
+        new_tail_chunk->coord = snake->head->coord;
     }
+    else
+    {
+        new_tail_chunk->coord = snake->tail->coord;
+    }
+    
+    new_tail_chunk->direction = snake->head->direction;
+    
+    switch (snake->head->direction)
+    {
+        case Down:
+        {
+            new_tail_chunk->coord.y--;
+            break;
+        }
+        case Up:
+        {
+            new_tail_chunk->coord.y++;
+            break;
+        }
+        case Left:
+        {
+            new_tail_chunk->coord.x++;
+            break;
+        }
+        case Right:
+        {
+            new_tail_chunk->coord.x--;
+            break;
+        }
+    }
+    
+    while (snake->head->next != NULL)
+    {
+        snake->head = snake->head->next;
+    }
+    
+    snake->head->next = new_tail_chunk;
+    snake->tail = new_tail_chunk;
+    
+    if (snake->head->type != Head)
+    {
+        snake->head->type = Body;
+    }
+    
+    snake->head = temp_head;
 }
+
 
 
 
@@ -134,8 +203,8 @@ internal void snake_init(Snake* snake,
                          ChunkDirection start_direction)
 {
     snake->head->direction = start_direction;
-    snake->head->x = start_x;
-    snake->head->y = start_y;
+    snake->head->coord.x = start_x;
+    snake->head->coord.y = start_y;
     snake->head->next = NULL;
     snake->head->type = Head;
     snake->state = Alive;
@@ -144,7 +213,7 @@ internal void snake_init(Snake* snake,
 }
 
 
-internal Snake* snake_alloc()
+internal Snake* snake_alloc(void)
 {
     Snake* new_snake = (Snake*)malloc(sizeof(Snake));
     new_snake->head = (SnakeChunk*)malloc(sizeof(SnakeChunk));
@@ -170,5 +239,4 @@ internal void snake_free(Snake** snake)
 
 #if defined(DEBUG_MODE)
 #endif
-
 

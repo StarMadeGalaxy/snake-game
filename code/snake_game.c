@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <time.h>
 
-
 #pragma warning( disable : 4554 )
 
 int main(int arg_count, char* arg_array[])
@@ -20,11 +19,9 @@ int main(int arg_count, char* arg_array[])
     snake_init(snake, (u16)(screen_width / 2), (u16)(screen_height / 2), None);
     
 #if !defined(GUI_ENABLED)
-    WinConsoleRenderer* renderer = console_renderer_create(screen_height, screen_width);
+    ConsoleRenderer* renderer = console_renderer_create(screen_height, screen_width);
 #elif defined(GUI_ENABLED)
-#endif // !defined(GUI_ENABLED)
-    
-    
+#endif defined(GUI_ENABLED)
     GameInput game_input;
     
     // NOTE(Venci): this entire file should GUI_ENABLED independent 
@@ -47,7 +44,7 @@ int main(int arg_count, char* arg_array[])
         {
             game_input.keyboard_keys[KEYBOARD_D] = BUTTON_UP;
         }
-#if defined(DEBUG_MDOE)
+#if defined(DEBUG_MODE)
         if (console_is_key_pressed((u32)VK_SPACE))
         {
             game_input.keyboard_keys[KEYBOARD_SPACE] = BUTTON_UP;
@@ -84,7 +81,7 @@ int main(int arg_count, char* arg_array[])
         game_render_update(&game_input, snake, game_map, renderer);
         
 #endif /* !defined(GUI_ENABLED)*/
-        Sleep(150);
+        Sleep(50);
     }
     //system("PAUSE");
     

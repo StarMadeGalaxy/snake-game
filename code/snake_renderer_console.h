@@ -1,7 +1,7 @@
 /* date = October 20th 2022 2:27 am */
 
-#ifndef SNAKE_RENDERER_CONSOLE_WIN
-#define SNAKE_RENDERER_CONSOLE_WIN
+#ifndef SNAKE_RENDERER_CONSOLE
+#define SNAKE_RENDERER_CONSOLE
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -34,45 +34,47 @@ Because it's definitely not the last project in my entire life.
 */
 
 
-typedef struct WinConsoleRendererCommandsQueue
+typedef struct ConsoleRendererCommandsQueue
 {
     void* commands_queue;
-} WinConsoleRendererCommandsQueue;
+} ConsoleRendererCommandsQueue;
 
 
-typedef enum WinConsoleRendererCommand
+typedef enum ConsoleRendererCommand
 {
     CLEAR_FRAME,
     RENDER_FRAME,
     
     RENDERER_COMMAND_COUNT
-} WinConsoleRendererCommand;
+} ConsoleRendererCommand;
 
 
-typedef struct WinConsoleSize
+typedef struct ConsoleSize
 {
     // NOTE(Venci): Size of the actual frame to render
     u16 height;
     u16 width;
-} WinConsoleSize;
+} ConsoleSize;
 
 
-typedef struct WinConsoleRenderer
+typedef struct ConsoleRenderer
 {
-    WinConsoleRendererCommand commands;
-    WinConsoleSize size; 
+    ConsoleRendererCommand commands;
+    ConsoleSize size; 
     void* frame_data;
+#if defined(_WIN32)
     HANDLE console_handler;
-} WinConsoleRenderer;
+#endif // defined(_WIN32)
+} ConsoleRenderer;
 
 
 RCW_API internal u16 console_is_key_pressed(u32 virtual_key_code);
-RCW_API internal void console_cursor_hide(WinConsoleRenderer* renderer);
-RCW_API internal void console_cursor_begin_move(WinConsoleRenderer* renderer);
-RCW_API internal void console_render_frame(WinConsoleRenderer* renderer);
-RCW_API internal void console_renderer_destroy(WinConsoleRenderer* renderer);
-RCW_API internal WinConsoleRenderer* console_renderer_create(u16 screen_height,
-                                                             u16 screen_width);
+RCW_API internal void console_cursor_hide(ConsoleRenderer* renderer);
+RCW_API internal void console_cursor_begin_move(ConsoleRenderer* renderer);
+RCW_API internal void console_render_frame(ConsoleRenderer* renderer);
+RCW_API internal void console_renderer_destroy(ConsoleRenderer* renderer);
+RCW_API internal ConsoleRenderer* console_renderer_create(u16 screen_height,
+                                                          u16 screen_width);
 
 
 #endif /*SNAKE_RENDERER_CONSOLE_WIN*/

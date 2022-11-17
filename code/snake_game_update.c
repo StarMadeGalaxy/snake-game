@@ -17,26 +17,30 @@ internal void game_render_update(GameInput* input,
         snake->head->direction = None;
     }
 #endif // defined(DEBUG)
-    if (input->keyboard_keys[KEYBOARD_W])
+    if (input->keyboard_keys[KEYBOARD_W] && 
+        snake->head->direction != Down) 
     {
         snake->head->direction = Up;
     }
-    if (input->keyboard_keys[KEYBOARD_A])
+    if (input->keyboard_keys[KEYBOARD_A] && 
+        snake->head->direction != Right)
     {
         snake->head->direction = Left;
     }
-    if (input->keyboard_keys[KEYBOARD_S])
+    if (input->keyboard_keys[KEYBOARD_S] && 
+        snake->head->direction != Up)
     {
         snake->head->direction = Down;
     }
-    if (input->keyboard_keys[KEYBOARD_D])
+    if (input->keyboard_keys[KEYBOARD_D] && 
+        snake->head->direction != Left)
     {
         snake->head->direction = Right;
     }
-    
     if (snake->head->direction != None)
     {
         snake_move(snake);
+        snake_rotate(snake);
     }
     
     CollisionType snake_collision = snake_collision_check(snake, game_map);
@@ -46,16 +50,32 @@ internal void game_render_update(GameInput* input,
         case BORDER_COLLISION:
         {
             snake->state = Dead;
+            break;
         }
         case BODY_COLLISION:
         {
             snake->state = Dead;
+            break;
+        }
+        case FOOD_COLLISION:
+        {
+            game_map->food_chunk->type = Space;
+            snake_grow(snake, 1);
+            break;
         }
     }
     
+    // NOTE(Venci): temp solution
+    
+    if (game_map->food_chunk->type != Food)
+        food_generate(game_map);
+    
+    
+#if !defined(GUI_ENABLED)
     console_cursor_begin_move(renderer);
     console_make_frame(renderer, snake, game_map);
     console_render_frame(renderer);
+#endif // !defined(GUI_ENABLED)
     
 #if defined(DEBUG_MODE)
     local int test_var;
@@ -92,13 +112,14 @@ internal void game_render_update(GameInput* input,
     else if (input->keyboard_keys[KEYBOARD_SPACE] == BUTTON_DOWN)
         fprintf(stdout, "Space key is unpressed %d               \n", test_var);
     
-    fprintf(stdout, "snake->head->dn  : %d\n", snake->head->direction);
-    fprintf(stdout, "Snake->head->x   : %d\n", snake->head->x);
-    fprintf(stdout, "snake->head->type: %d\n", snake->head->type);
-    fprintf(stdout, "snake->head->y   : %d\n", snake->head->y);
     fprintf(stdout, "snake->tail      : %p\n", snake->tail);
-    fprintf(stdout, "snake->head->next: %p\n", snake->head->next);
     fprintf(stdout, "snake->head      : %p\n", snake->head);
+    fprintf(stdout, "snake->head->next: %p\n", snake->head->next);
+    fprintf(stdout, "snake->head->type: %d\n", snake->head->type);
+    fprintf(stdout, "Snake->head->x   : %d\n", snake->head->coord.x);
+    fprintf(stdout, "snake->head->y   : %d\n", snake->head->coord.y);
+    fprintf(stdout, "snake->head->dn  : %d\n", snake->head->direction);
+    fprintf(stdout, "random test 1-5  : %d\n", get_random_number(1, 5));
     
     test_var++;
 #endif // defined(DEBUG_MODE) 
