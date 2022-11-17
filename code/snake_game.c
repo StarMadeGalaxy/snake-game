@@ -9,7 +9,6 @@ int main(int arg_count, char* arg_array[])
     srand((u32)time(NULL)); 
     
     const u16 screen_width = 25;
-    
     const u16 screen_height = 15;
     
     Map* game_map = map_alloc(screen_height, screen_width);
@@ -18,11 +17,12 @@ int main(int arg_count, char* arg_array[])
     Snake* snake = snake_alloc();
     snake_init(snake, (u16)(screen_width / 2), (u16)(screen_height / 2), None);
     
+    GameInput game_input;
+    
 #if !defined(GUI_ENABLED)
     ConsoleRenderer* renderer = console_renderer_create(screen_height, screen_width);
 #elif defined(GUI_ENABLED)
-#endif defined(GUI_ENABLED)
-    GameInput game_input;
+#endif // defined(GUI_ENABLED)
     
     // NOTE(Venci): this entire file should GUI_ENABLED independent 
     while (snake->state == Alive)

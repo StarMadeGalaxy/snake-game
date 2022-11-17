@@ -1,4 +1,5 @@
 #include "snake_logic.h"
+// #include <stdlib.h>
 
 
 internal void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
@@ -91,7 +92,22 @@ internal void snake_rotate(Snake* snake)
 {
     // NOTE(Venci): Change direction at snake's corners
     // TODO(Venci): Think and simplify this code by using doubly-linked snake
+#if defined(SNAKE_DOUBLY_LINKED_LIST)
+    SnakeChunk* reserved_tail = snake->tail;
+    
+    while (snake->tail != NULL)
+    {
+        if (snake->tail->prev != NULL &&
+            snake->tail->direction != snake->tail->prev->direction)
+        {
+            snake->tail->direction = snake->tail->prev->direction;
+        }
+        snake->tail = snake->tail->prev;
+    }
+    snake->tail = reserved_tail;
+#elif defined(SNAKE_SINGLY_LINKED_LIST)
     SnakeChunk* reserved_head = snake->head;
+    
     u32 snake_length = 0;
     
     while (snake->head != NULL)
@@ -122,6 +138,7 @@ internal void snake_rotate(Snake* snake)
         }
     }
     free(snake_stack);
+#endif // defined(SNAKE_DOUBLY_LINKED_LIST)
 }
 
 
@@ -132,66 +149,74 @@ NOTE(Venci):
 size could be used for (ну что-то совсем не бонусная) bonus food, you eat it and grow by more
 than 1 chunk. 
 TODO(Venci):
-Have to check if there's enough space on the map
+) Have to check if there's enough space on the map
 and can we generate food further
+) Limit size on map size.
 */
     
     SnakeChunk* temp_head = snake->head;
     SnakeChunk* new_tail_chunk;
     
-    new_tail_chunk = (SnakeChunk*)malloc(sizeof(SnakeChunk));
-    new_tail_chunk->next = NULL;
-    new_tail_chunk->type = Tail;
-    
-    if (snake->tail == NULL)
+    for (u32 i = 0; i < size; i++)
     {
-        new_tail_chunk->coord = snake->head->coord;
-    }
-    else
-    {
-        new_tail_chunk->coord = snake->tail->coord;
-    }
-    
-    new_tail_chunk->direction = snake->head->direction;
-    
-    switch (snake->head->direction)
-    {
-        case Down:
+        new_tail_chunk = (SnakeChunk*)malloc(sizeof(SnakeChunk));
+        new_tail_chunk->next = NULL;
+        new_tail_chunk->type = Tail;
+        
+        
+        if (snake->tail == NULL)
         {
-            new_tail_chunk->coord.y--;
-            break;
+            new_tail_chunk->coord = snake->head->coord;
         }
-        case Up:
+        else
         {
-            new_tail_chunk->coord.y++;
-            break;
+            new_tail_chunk->coord = snake->tail->coord;
         }
-        case Left:
+        
+        new_tail_chunk->direction = snake->head->direction;
+        
+        switch (snake->head->direction)
         {
-            new_tail_chunk->coord.x++;
-            break;
+            case Down:
+            {
+                new_tail_chunk->coord.y--;
+                break;
+            }
+            case Up:
+            {
+                new_tail_chunk->coord.y++;
+                break;
+            }
+            case Left:
+            {
+                new_tail_chunk->coord.x++;
+                break;
+            }
+            case Right:
+            {
+                new_tail_chunk->coord.x--;
+                break;
+            }
         }
-        case Right:
+        
+        while (snake->head->next != NULL)
         {
-            new_tail_chunk->coord.x--;
-            break;
+            snake->head = snake->head->next;
         }
+        
+#if defined(SNAKE_DOUBLY_LINKED_LIST)
+        new_tail_chunk->prev = snake->head;
+#endif // defined(SNAKE_DOUBLY_LINKED_LIST)
+        
+        snake->head->next = new_tail_chunk;
+        snake->tail = new_tail_chunk;
+        
+        if (snake->head->type != Head)
+        {
+            snake->head->type = Body;
+        }
+        snake->head = temp_head;
     }
-    
-    while (snake->head->next != NULL)
-    {
-        snake->head = snake->head->next;
-    }
-    
-    snake->head->next = new_tail_chunk;
-    snake->tail = new_tail_chunk;
-    
-    if (snake->head->type != Head)
-    {
-        snake->head->type = Body;
-    }
-    
-    snake->head = temp_head;
 }
 
 
@@ -210,6 +235,9 @@ internal void snake_init(Snake* snake,
     snake->state = Alive;
     snake->speed = 1;
     snake->tail = NULL;
+#if defined(SNAKE_DOUBLY_LINKED_LIST)
+    snake->head->prev = NULL;
+#endif // defined(SNAKE_DOUBLY_LINKED_LIST)
 }
 
 
@@ -236,7 +264,4 @@ internal void snake_free(Snake** snake)
     *snake = NULL;
 }
 
-
-#if defined(DEBUG_MODE)
-#endif
 

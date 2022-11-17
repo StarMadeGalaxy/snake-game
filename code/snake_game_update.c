@@ -120,6 +120,12 @@ internal void game_render_update(GameInput* input,
     fprintf(stdout, "snake->head->y   : %d\n", snake->head->coord.y);
     fprintf(stdout, "snake->head->dn  : %d\n", snake->head->direction);
     fprintf(stdout, "random test 1-5  : %d\n", get_random_number(1, 5));
+    fprintf(stdout, "Game mode: DEBUG_MODE\n");
+#if defined(SNAKE_DOUBLY_LINKED_LIST)
+    fprintf(stdout, "Snake structure: DOUBLY_LINKED_LIST\n");
+#elif defined(SNAKE_SINGLY_LINKED_LIST)
+    fprintf(stdout, "Snake structure: SINGLY_LINKED_LIST\n");
+#endif // defined(SNAKE_DOUBLY_LINKED_LIST)
     
     test_var++;
 #endif // defined(DEBUG_MODE) 
