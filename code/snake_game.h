@@ -13,38 +13,25 @@
  */
 
 
-/* 
-NOTE(Venci): 
-I'm not sure if I should include all of the
+
+/* NOTE(Venci): I'm not sure if I should include all of the
 headers files here. I'm just trying to get the unity 
 build done. The way i used to build things is by including
 header to the corresponding source file. So I'm about to 
   accomplish the same in this project, but here I'm going to
-include all of the source files
-*/
-
-
-#if !defined(GUI_ENABLED) && !defined(UNICODE_ENABLED)
-typedef char CONSOLE_FRAME_TYPE;
-#elif !defined(GUI_ENABLED) && defined(UNICODE_ENABLED)
-typedef wchar_t CONSOLE_FRAME_TYPE;
-#endif /*defined(GUI_ENABLED)*/
-
+include all of the source files */
 
 #if defined(GUI_ENABLED)
-# define RRL_API /*__declspec(dllexport)*/ /* (R)enderer (R)ay(L)ib  */
+# include "snake_renderer_raylib.h"
 # define CURRENT_RENDERER RaylibRenderer
-# include "snake_renderer_raylib.c"
-#else
-# define RCW_API /*__declspec(dllexport)*/ /* (R)enderer (C)onsole (W)in */
+#elif !defined(GUI_ENABLED)
+# include "snake_renderer_console.h"
 # define CURRENT_RENDERER ConsoleRenderer
-# include "snake_renderer_console.c"
 #endif /*define(GUI_ENABLED)*/
-
 
 #include "snake_game_update.c"
 #include "snake_logic.c"
-#include "snake_map.c"
+//#include "snake_map.c"
 
 
 #endif //SNAKE_GAME_H

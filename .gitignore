@@ -17,6 +17,7 @@
 *.rdbg
 
 # Build directory
+code/cpp_version
 build/
 
 CommandLineFPS.cpp

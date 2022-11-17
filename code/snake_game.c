@@ -1,5 +1,7 @@
+// NOTE(Venci): this entire file should GUI_ENABLED independent 
+// NOTE(Venci): and platform independent as well
+
 #include "snake_game.h"
-#include <Windows.h>
 #include <time.h>
 
 #pragma warning( disable : 4554 )
@@ -7,6 +9,7 @@
 int main(int arg_count, char* arg_array[])
 {
     srand((u32)time(NULL)); 
+    
     
     const u16 screen_width = 25;
     const u16 screen_height = 15;
@@ -24,7 +27,6 @@ int main(int arg_count, char* arg_array[])
 #elif defined(GUI_ENABLED)
 #endif // defined(GUI_ENABLED)
     
-    // NOTE(Venci): this entire file should GUI_ENABLED independent 
     while (snake->state == Alive)
     {
 #if !defined(GUI_ENABLED)
@@ -98,8 +100,7 @@ int main(int arg_count, char* arg_array[])
 #endif // defined(GUI_ENABLED)
 #if defined(DEBUG_MODE)
     if (snake == NULL)
-        puts("Snake is probably freed, at least it has been NULLed");
-    system("PAUSE");
+        puts("Snake has been NULLed");
 #endif // defined(DEBUG_MODE)
     map_free(game_map);
     snake_free(&snake);

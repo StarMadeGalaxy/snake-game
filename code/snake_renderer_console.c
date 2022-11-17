@@ -1,7 +1,7 @@
 #include "snake_renderer_console.h"
 
 
-internal u16 console_is_key_pressed(u32 virtual_key_code)
+SRC_API u16 console_is_key_pressed(u32 virtual_key_code)
 {
 #if defined(_WIN32)
     return (GetAsyncKeyState(virtual_key_code) & MSB(u16));
@@ -9,15 +9,26 @@ internal u16 console_is_key_pressed(u32 virtual_key_code)
 }
 
 
-internal void console_renderer_destroy(ConsoleRenderer* renderer)
+SRC_API void console_renderer_destroy(ConsoleRenderer* renderer)
 {
     free(renderer->frame_data);
     free(renderer);
 }
 
 
-internal ConsoleRenderer* console_renderer_create(u16 screen_height,
-                                                  u16 screen_width)
+SRC_API void console_cursor_hide(ConsoleRenderer* renderer)
+{
+#if defined(_WIN32)
+    CONSOLE_CURSOR_INFO cc_info;
+    GetConsoleCursorInfo(renderer->console_handler, &cc_info);
+    cc_info.bVisible = 0;
+    SetConsoleCursorInfo(renderer->console_handler, &cc_info);
+#endif // defined(_WIN32)
+}
+
+
+SRC_API ConsoleRenderer* console_renderer_create(u16 screen_height,
+                                                 u16 screen_width)
 {
     ConsoleRenderer* renderer = (ConsoleRenderer*)malloc(sizeof(ConsoleRenderer));
     
@@ -35,24 +46,13 @@ internal ConsoleRenderer* console_renderer_create(u16 screen_height,
 }
 
 
-internal void console_cursor_hide(ConsoleRenderer* renderer)
-{
-#if defined(_WIN32)
-    CONSOLE_CURSOR_INFO cc_info;
-    GetConsoleCursorInfo(renderer->console_handler, &cc_info);
-    cc_info.bVisible = 0;
-    SetConsoleCursorInfo(renderer->console_handler, &cc_info);
-#endif // defined(_WIN32)
-}
-
-
 #define MAKE_MAP
 #define MAKE_SNAKE
-internal void console_make_frame(ConsoleRenderer* renderer, 
-                                 Snake* snake, 
-                                 Map* game_map)
+SRC_API void console_make_frame(ConsoleRenderer* renderer, 
+                                Snake* snake, 
+                                Map* game_map)
 {
-#if defined(MAKE_MAP)    // NOTE(Venci): filling renderer data with map
+    // NOTE(Venci): filling renderer data with map
     for (u16 y = 0; y < game_map->height; y++) 
     {
         for (u16 x = 0; x < game_map->width; x++) 
@@ -78,14 +78,15 @@ internal void console_make_frame(ConsoleRenderer* renderer,
             }
         }
     }
-#endif // defined(MAKE_MAP)
-#if defined(MAKE_SNAKE)    // NOTE(Venci): filling renderer data with snake
+    
+    // NOTE(Venci): filling renderer data with snake
     SnakeChunk* temp_chunk = snake->head;
     while (snake->head != NULL)
     {
         u32 index = snake->head->coord.y * renderer->size.width + snake->head->coord.x;
         switch (snake->head->type)
         {
+            
             case Body:
             {
                 ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = BODY_CHAR;
@@ -105,11 +106,10 @@ internal void console_make_frame(ConsoleRenderer* renderer,
         snake->head = snake->head->next;
     }
     snake->head = temp_chunk;
-#endif // defined(MAKE_SNAKE)
 }
 
 
-internal void console_cursor_begin_move(ConsoleRenderer* renderer)
+SRC_API void console_cursor_begin_move(ConsoleRenderer* renderer)
 {
 #if defined(_WIN32)
     COORD position = { 0, 0 };
@@ -118,7 +118,7 @@ internal void console_cursor_begin_move(ConsoleRenderer* renderer)
 }
 
 
-internal void console_render_frame(ConsoleRenderer* renderer)
+SRC_API void console_render_frame(ConsoleRenderer* renderer)
 {
     for (u16 y = 0; y < renderer->size.height; y++)
     {
