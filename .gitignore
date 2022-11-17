@@ -1,6 +1,9 @@
 # Object files
 *.obj
 
+# Visual Studio Solution
+*.sln
+
 # Linker output
 *.ilk
 

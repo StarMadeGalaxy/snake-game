@@ -8,13 +8,13 @@
 - [x] Use only C programming language
 - [ ] Linux support 
 - [ ] Understand and implement basic concepts of the renderer
-- [ ] -Understand and implement a bitmap concept-
+- [ ] ~~Understand and implement a bitmap concept~~
 - [ ] Understand how to implement FPS counter 
 - [ ] Be able to switch between GUI and NON-GUI mode
 - [x] Snake should be implemented as a linked list
 - [x] Separate snake game logic and the renderer
 - [ ] Load renderer dynamically
-### -Understand and implement a bitmap concept- is deprecated, because I use thirdparty library to do graphics.
+> ~~Understand and implement a bitmap concept~~ is deprecated, because I use thirdparty library to do graphics.
 > New goals are coming soon...
 
 
