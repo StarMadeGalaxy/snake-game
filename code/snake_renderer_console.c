@@ -39,6 +39,13 @@ SRC_API ConsoleRenderer* console_renderer_create(u16 screen_height,
     renderer->size.width = screen_width;
 #if defined(_WIN32) 
     renderer->console_handler = GetStdHandle(STD_OUTPUT_HANDLE);
+    
+    CONSOLE_SCREEN_BUFFER_INFO cbsi;
+    GetConsoleScreenBufferInfo(renderer->console_handler, &cbsi);
+    
+    renderer->cbsi.dwCursorPosition.X = 0;
+    renderer->cbsi.dwCursorPosition.Y += 1;
+    
     console_cursor_hide(renderer);
 #endif // defined(_WIN_32)
     
@@ -112,8 +119,8 @@ SRC_API void console_make_frame(ConsoleRenderer* renderer,
 SRC_API void console_cursor_begin_move(ConsoleRenderer* renderer)
 {
 #if defined(_WIN32)
-    COORD position = { 0, 0 };
-    SetConsoleCursorPosition(renderer->console_handler, position);
+    SetConsoleCursorPosition(renderer->console_handler,
+                             renderer->cbsi.dwCursorPosition);
 #endif // defined(_WIN32)
 }
 

@@ -10,6 +10,7 @@ SET RL_BIN_PATH=%SRC%\thirdparty\raylib\bin
 SET RL_LIB_PATH=%SRC%\thirdparty\raylib\lib
 SET RL_INC_PATH=%SRC%\thirdparty\raylib\include  
 
+:: BUILD_OPTIONS instructions
 :: set /DRELEASE_MODE to build int the release mode
 :: set /DGUI_ENABLED to use GUI (in progress...)
 :: set /DSNAKE_DOUBLY_LINKED_LIST to use snake as doubly-linked list
@@ -33,6 +34,12 @@ cl %CL_OPTS% /LD /Fesnake_renderer_console.dll %CON_REND_FILE% user32.lib
 
 :: Compile and link the game
 cl %BUILD_OPTIONS% %CL_OPTS% %ENTRY_FILE% /I%INC_PATH% /LIBPATH:%RL_LIB_PATH% /link %COMMON_LINK_FLAGS%
+
+del *.ilk
+del *.exp
+del *.lib
+del *.pdb
+del *.obj
 
 POPD
 

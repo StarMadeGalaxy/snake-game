@@ -71,7 +71,10 @@ typedef struct ConsoleRenderer
     void* frame_data;
 #if defined(_WIN32)
     HANDLE console_handler;
+    CONSOLE_SCREEN_BUFFER_INFO cbsi;
+#elif defined(__linux__)
 #endif // defined(_WIN32)
+    
 } ConsoleRenderer;
 
 

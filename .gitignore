@@ -6,6 +6,8 @@
 
 # Linker output
 *.ilk
+*.exp
+*.dll
 
 # Executables
 *.exe
