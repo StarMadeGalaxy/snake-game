@@ -1,4 +1,5 @@
 #include "snake_game.hpp"
+#include "snake_map.hpp"
 
 #include <ctime>
 #include <chrono>

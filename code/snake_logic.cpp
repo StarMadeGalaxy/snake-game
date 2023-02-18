@@ -4,7 +4,7 @@
 #include "snake_map.hpp"
 
 
-function void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
+internal void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
 {
     switch (chunk->direction) 
     {
@@ -32,7 +32,7 @@ function void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
 }
 
 
-function CollisionType snake_collision_check(Snake* snake, Map* map)
+internal CollisionType snake_collision_check(Snake* snake, Map* map)
 {
     CollisionType result;
     for (u16 map_y = 0; map_y < map->height; map_y++)
@@ -58,7 +58,7 @@ function CollisionType snake_collision_check(Snake* snake, Map* map)
         }
     }
     is_collided:
-    
+
     SnakeChunk* temp_head = snake->head;
     
     while (snake->head->next != NULL)
@@ -77,7 +77,7 @@ function CollisionType snake_collision_check(Snake* snake, Map* map)
 }
 
 
-function void snake_move(Snake* snake)
+internal void snake_move(Snake* snake)
 {
     SnakeChunk* reserved_head = snake->head;
     
@@ -90,7 +90,7 @@ function void snake_move(Snake* snake)
 }
 
 
-function void snake_rotate(Snake* snake)
+internal void snake_rotate(Snake* snake)
 {
     // NOTE(Venci): Change direction at snake's corners
     // TODO(Venci): Think and simplify this code by using doubly-linked snake
@@ -144,7 +144,7 @@ function void snake_rotate(Snake* snake)
 }
 
 
-function void snake_grow(Snake* snake, u32 size)
+internal void snake_grow(Snake* snake, u32 size)
 {
     /*
     NOTE(Venci): 
@@ -216,7 +216,7 @@ function void snake_grow(Snake* snake, u32 size)
 
 
 
-function void snake_init(Snake* snake, 
+internal void snake_init(Snake* snake, 
                          u16 start_x, 
                          u16 start_y, 
                          ChunkDirection start_direction)
@@ -235,7 +235,7 @@ function void snake_init(Snake* snake,
 }
 
 
-function Snake* snake_alloc(void)
+internal Snake* snake_alloc(void)
 {
     Snake* new_snake = (Snake*)malloc(sizeof(Snake));
     new_snake->head = (SnakeChunk*)malloc(sizeof(SnakeChunk));
@@ -243,7 +243,7 @@ function Snake* snake_alloc(void)
 }
 
 
-function void snake_free(Snake** snake)
+internal void snake_free(Snake** snake)
 {
     SnakeChunk* temp_head;
     Snake* snake_pointer = *snake;

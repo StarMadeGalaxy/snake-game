@@ -15,20 +15,20 @@ namespace settings
 }
 
 
-function u16 console_is_key_pressed(u32 virtual_key_code)
+internal u16 console_is_key_pressed(u32 virtual_key_code)
 {
     return (GetAsyncKeyState(virtual_key_code) & MSB(u16));
 }
 
 
-function void console_renderer_destroy(GameRenderer* renderer)
+internal void console_renderer_destroy(GameRenderer* renderer)
 {
     free(renderer->frame_data);
     free(renderer);
 }
 
 
-function void console_cursor_hide(GameRenderer* renderer)
+internal void console_cursor_hide(GameRenderer* renderer)
 {
     CONSOLE_CURSOR_INFO cc_info;
     GetConsoleCursorInfo(renderer->console_handler, &cc_info);
@@ -39,7 +39,7 @@ function void console_cursor_hide(GameRenderer* renderer)
 
 #define MAKE_MAP
 #define MAKE_SNAKE
-function void console_make_frame(GameRenderer* renderer, 
+internal void console_make_frame(GameRenderer* renderer, 
                                 Snake* snake, 
                                 Map* game_map)
 {
@@ -98,13 +98,13 @@ function void console_make_frame(GameRenderer* renderer,
 }
 
 
-function void console_cursor_begin_move(GameRenderer* renderer)
+internal void console_cursor_begin_move(GameRenderer* renderer)
 {
     SetConsoleCursorPosition(renderer->console_handler, renderer->cbsi.dwCursorPosition);
 }
 
 
-function void console_render_frame(GameRenderer* renderer)
+internal void console_render_frame(GameRenderer* renderer)
 {
     for (u16 y = 0; y < renderer->size.height; y++)
     {
