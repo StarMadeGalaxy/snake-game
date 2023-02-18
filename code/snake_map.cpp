@@ -1,7 +1,11 @@
-#include "snake_map.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <random>
+
+#include "snake_map.hpp"
 
 
-internal Coordinates food_generate(Map* map)
+function Coordinates food_generate(Map* map)
 {
     // NOTE(Venci): -2 due to border and first index is 0
     Coordinates food_coord;
@@ -19,19 +23,21 @@ internal Coordinates food_generate(Map* map)
 }
 
 
-internal u16 get_random_number(u16 lower, u16 upper)
+function u16 get_random_number(u16 lower, u16 upper)
 {
-    return (rand() % (upper - lower + 1)) + lower;
+    std::random_device rd;
+    std::uniform_int_distribution<u16> dist(lower, upper);
+    return dist(rd);
 }
 
 
-internal MapChunk* get_map_chunk(Map* map, u16 x, u16 y)
+function MapChunk* get_map_chunk(Map* map, u16 x, u16 y)
 {
     return &map->ptr[y * map->width + x];
 }
 
 
-internal Map* map_alloc(u16 height, u16 width)
+function Map* map_alloc(u16 height, u16 width)
 {
     Map* game_map = (Map*)malloc(sizeof(Map));
     game_map->ptr = (MapChunk*)malloc((size_t)height * (size_t)width * sizeof(MapChunk*));
@@ -41,7 +47,7 @@ internal Map* map_alloc(u16 height, u16 width)
 }
 
 
-internal void map_init(Map* map)
+function void map_init(Map* map)
 {
     MapChunk* chunk;
     for (u16 x = 0; x < map->width; x++)
@@ -86,14 +92,14 @@ internal void map_init(Map* map)
 }
 
 
-internal void map_free(Map* map)
+function void map_free(Map* map)
 {
     free(map->ptr);
 }
 
 
 #if defined(DEBUG_MODE)
-internal void spawn_food_coord(Map* map, u16 x, u16 y)
+function void spawn_food_coord(Map* map, u16 x, u16 y)
 {
     MapChunk* food_chunk_ptr = get_map_chunk(map, x, y);
     food_chunk_ptr->type = Food;

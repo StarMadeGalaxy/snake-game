@@ -1,8 +1,10 @@
-#include "snake_logic.h"
-// #include <stdlib.h>
+#include <stdlib.h>
+
+#include "snake_logic.hpp"
+#include "snake_map.hpp"
 
 
-internal void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
+function void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
 {
     switch (chunk->direction) 
     {
@@ -30,7 +32,7 @@ internal void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
 }
 
 
-internal CollisionType snake_collision_check(Snake* snake, Map* map)
+function CollisionType snake_collision_check(Snake* snake, Map* map)
 {
     CollisionType result;
     for (u16 map_y = 0; map_y < map->height; map_y++)
@@ -45,16 +47,17 @@ internal CollisionType snake_collision_check(Snake* snake, Map* map)
                     // NOTE(Venci): I really hope that this is legal goto usage
                     // i've seen usage like that in linux kernel style guide!
                     result = BORDER_COLLISION;
-                    goto collision_return;
+                    goto is_collided;
                 }
                 case Food:
                 {
                     result = FOOD_COLLISION;
-                    goto collision_return;
+                    goto is_collided;
                 }
             }
         }
     }
+    is_collided:
     
     SnakeChunk* temp_head = snake->head;
     
@@ -70,12 +73,11 @@ internal CollisionType snake_collision_check(Snake* snake, Map* map)
     }
     snake->head = temp_head;
     
-    collision_return:
     return result;
 }
 
 
-internal void snake_move(Snake* snake)
+function void snake_move(Snake* snake)
 {
     SnakeChunk* reserved_head = snake->head;
     
@@ -88,7 +90,7 @@ internal void snake_move(Snake* snake)
 }
 
 
-internal void snake_rotate(Snake* snake)
+function void snake_rotate(Snake* snake)
 {
     // NOTE(Venci): Change direction at snake's corners
     // TODO(Venci): Think and simplify this code by using doubly-linked snake
@@ -142,17 +144,17 @@ internal void snake_rotate(Snake* snake)
 }
 
 
-internal void snake_grow(Snake* snake, u32 size)
+function void snake_grow(Snake* snake, u32 size)
 {
     /*
-NOTE(Venci): 
-size could be used for (ну что-то совсем не бонусная) bonus food, you eat it and grow by more
-than 1 chunk. 
-TODO(Venci):
-) Have to check if there's enough space on the map
-and can we generate food further
-) Limit size on map size.
-*/
+    NOTE(Venci): 
+            size could be used for (ну что-то совсем не бонусная) bonus food, you eat it and grow by more
+            than 1 chunk. 
+    TODO(Venci):
+        ) Have to check if there's enough space on the map
+            and can we generate food further
+        ) Limit size on map size.
+    */
     
     SnakeChunk* temp_head = snake->head;
     SnakeChunk* new_tail_chunk;
@@ -165,13 +167,9 @@ and can we generate food further
         
         
         if (snake->tail == NULL)
-        {
             new_tail_chunk->coord = snake->head->coord;
-        }
         else
-        {
             new_tail_chunk->coord = snake->tail->coord;
-        }
         
         new_tail_chunk->direction = snake->head->direction;
         
@@ -200,9 +198,7 @@ and can we generate food further
         }
         
         while (snake->head->next != NULL)
-        {
             snake->head = snake->head->next;
-        }
         
 #if defined(SNAKE_DOUBLY_LINKED_LIST)
         new_tail_chunk->prev = snake->head;
@@ -212,9 +208,7 @@ and can we generate food further
         snake->tail = new_tail_chunk;
         
         if (snake->head->type != Head)
-        {
             snake->head->type = Body;
-        }
         snake->head = temp_head;
     }
 }
@@ -222,7 +216,7 @@ and can we generate food further
 
 
 
-internal void snake_init(Snake* snake, 
+function void snake_init(Snake* snake, 
                          u16 start_x, 
                          u16 start_y, 
                          ChunkDirection start_direction)
@@ -241,7 +235,7 @@ internal void snake_init(Snake* snake,
 }
 
 
-internal Snake* snake_alloc(void)
+function Snake* snake_alloc(void)
 {
     Snake* new_snake = (Snake*)malloc(sizeof(Snake));
     new_snake->head = (SnakeChunk*)malloc(sizeof(SnakeChunk));
@@ -249,7 +243,7 @@ internal Snake* snake_alloc(void)
 }
 
 
-internal void snake_free(Snake** snake)
+function void snake_free(Snake** snake)
 {
     SnakeChunk* temp_head;
     Snake* snake_pointer = *snake;

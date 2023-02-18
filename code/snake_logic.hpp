@@ -3,7 +3,7 @@
 #ifndef SNAKE_LOGIC_H
 #define SNAKE_LOGIC_H
 
-#include "snake_types.h"
+#include "snake_types.hpp"
 
 
 internal CollisionType snake_collision_check(Snake* snake, Map* map);

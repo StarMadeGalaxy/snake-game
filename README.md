@@ -1,20 +1,21 @@
 <h1 align="center">Snake Game</h1>
 
-   Me, trying to reimplement snake game (that i initially wrote in C++ without any guides or instruction, all algorithms were made by myself) in pure C for the learning purposes. Also i would like to implement optional GUI using [raylib](https://github.com/raysan5/raylib), in order to be able to turn it off and play in the raw console. Let's see what happens.
+   Me, trying to reimplement snake game (that i initially wrote in C++ without any guides or instruction, all algorithms were made by myself) in pure C for the learning purposes. Also i would like to implement optional GUI using [SDL2](https://github.com/libsdl-org/SDL), in order to be able to turn it off and play in the raw console. Let's see what happens.
 
 
 
 ## The goals I set for myself in this project:
-- [x] Use only C programming language
+- [x] ~~Use only C programming language~~
 - [ ] Linux support 
 - [ ] Understand and implement basic concepts of the renderer
-- [ ] ~~Understand and implement a bitmap concept~~
+- [x] ~~Understand and implement a bitmap concept~~
 - [ ] Understand how to implement FPS counter 
 - [ ] Be able to switch between GUI and NON-GUI mode
 - [x] Snake should be implemented as a linked list
 - [x] Separate snake game logic and the renderer
 - [ ] Load renderer dynamically
 > ~~Understand and implement a bitmap concept~~ is deprecated, because I use thirdparty library to do graphics.
+> ~~Use only C programming language~~ is deprecated, because I liked some of the C++ features.
 > New goals are coming soon...
 
 
@@ -34,7 +35,7 @@ To build the game, you have to have [Visual Studio](https://visualstudio.microso
    ```
 2. Build
    ```bat
-   build.bat
+   shell.bat && build.bat
    ```
 3. Run
    ```bat

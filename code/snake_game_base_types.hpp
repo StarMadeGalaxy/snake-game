@@ -29,6 +29,7 @@ typedef double f64;
 #define BIT_AMOUNT(type) (sizeof(type) * 8)
 #define RAND_RANGE(low, high) (((u16)rand() % (high - low + 1)) + low)
 #define COORD_INDEX(x, y, width) (y * width + x)
+#define INDEX(x) (static_cast<std::size_t>(x))
 
 #define Assert(expression)
 

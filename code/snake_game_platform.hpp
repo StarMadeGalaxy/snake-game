@@ -1,15 +1,69 @@
-/* date = November 2nd 2022 2:31 pm */
+#ifndef SNAKE_GAME_PLATFORM_H
+#define SNAKE_GAME_PLATFORM_H
+
+#include <cstddef>
+#include "snake_types.hpp"
+#include "snake_logic.hpp"
+#include "snake_map.hpp"
 
 
-#include "snake_game_platform.h"
-#include "base_types.h"
-#include "snake_logic.h"
+enum class InputKeyboardKeys
+{
+    KEYBOARD_SPACE,
+    KEYBOARD_W,
+    KEYBOARD_A,
+    KEYBOARD_S,
+    KEYBOARD_D,
+    KEYBOARD_ESC,
+    
+    KEYBOARD_KEYS_COUNT
+};
 
 
-internal void game_render_update(GameInput* input,
-                                 Snake* snake,
-                                 Map* game_map,
-                                 CURRENT_RENDERER* renderer)
+enum GameKeyState
+{
+    BUTTON_DOWN,
+    BUTTON_UP,
+    
+    BUTTON_STATES_COUNT
+};
+
+
+struct GameInput
+{
+    GameKeyState keyboard_keys[INDEX(InputKeyboardKeys::KEYBOARD_KEYS_COUNT)];
+};
+
+
+struct GameRenderer;
+
+
+class IPlatformAPI
+{
+public:
+    std::size_t screen_height_;
+    std::size_t screen_width_;
+
+    GameRenderer* renderer;
+    GameInput* input;
+
+    bool platform_active;
+public:
+    IPlatformAPI();
+
+    bool is_key_pressed(InputKeyboardKeys key);
+    void renderer_destroy(void);
+    void render_frame(Snake* snake, Map* map);
+
+    ~IPlatformAPI(void);
+private:
+    GameRenderer* renderer_create(void);
+};
+
+
+internal void game_render_update(IPlatformAPI* game_platform, 
+                                 GameInput* input, Snake* snake, 
+                                 Map* game_map)          
 {
 #if defined(DEBUG_MODE)
     if (input->keyboard_keys[KEYBOARD_SPACE])
@@ -17,22 +71,22 @@ internal void game_render_update(GameInput* input,
         snake->head->direction = None;
     }
 #endif // defined(DEBUG)
-    if (input->keyboard_keys[KEYBOARD_W] && 
+    if (input->keyboard_keys[INDEX(InputKeyboardKeys::KEYBOARD_W)] && 
         snake->head->direction != Down) 
     {
         snake->head->direction = Up;
     }
-    if (input->keyboard_keys[KEYBOARD_A] && 
+    if (input->keyboard_keys[INDEX(InputKeyboardKeys::KEYBOARD_A)] && 
         snake->head->direction != Right)
     {
         snake->head->direction = Left;
     }
-    if (input->keyboard_keys[KEYBOARD_S] && 
+    if (input->keyboard_keys[INDEX(InputKeyboardKeys::KEYBOARD_S)] && 
         snake->head->direction != Up)
     {
         snake->head->direction = Down;
     }
-    if (input->keyboard_keys[KEYBOARD_D] && 
+    if (input->keyboard_keys[INDEX(InputKeyboardKeys::KEYBOARD_D)] && 
         snake->head->direction != Left)
     {
         snake->head->direction = Right;
@@ -66,16 +120,10 @@ internal void game_render_update(GameInput* input,
     }
     
     // NOTE(Venci): temp solution
-    
     if (game_map->food_chunk->type != Food)
         food_generate(game_map);
     
-    
-#if !defined(GUI_ENABLED)
-    console_cursor_begin_move(renderer);
-    console_make_frame(renderer, snake, game_map);
-    console_render_frame(renderer);
-#endif // !defined(GUI_ENABLED)
+    game_platform->render_frame(snake, game_map);
     
 #if defined(DEBUG_MODE)
     local int test_var;
@@ -130,3 +178,7 @@ internal void game_render_update(GameInput* input,
     test_var++;
 #endif // defined(DEBUG_MODE) 
 }
+
+
+
+#endif //SNAKE_GAME_PLATFORM_H
