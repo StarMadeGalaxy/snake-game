@@ -16,7 +16,7 @@ SET RL_INC_PATH=%SRC%\thirdparty\raylib\include
 :: set /DSNAKE_DOUBLY_LINKED_LIST to use snake as doubly-linked list
 :: set /DSNAKE_SINGLY_LINKED_LIST to use snake as singly-linked list
 
-SET SNAKE_GAME_OPTS=/DDEBUG_MODE /DGUI_DISABLED /DSNAKE_DOUBLY_LINKED_LIST 
+SET SNAKE_GAME_OPTS=/DDEBUG_MODE /DGUI_DISABLED /DSNAKE_SINGLY_LINKED_LIST 
 
 SET ENTRY_FILE=%SRC%\code\snake_game_entry.cpp 
 SET ENTRY_FILE=%ENTRY_FILE% %SRC%\code\snake_logic.cpp

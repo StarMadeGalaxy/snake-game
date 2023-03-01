@@ -81,7 +81,7 @@ CollisionType Snake::snake_collision_check(Map* map)
 
     SnakeChunk* temp_head = head_;
     
-    while (head_->next != NULL)
+    while (head_->next != nullptr)
     {
         if (temp_head->coord.x == head_->next->coord.x &&
             temp_head->coord.y == head_->next->coord.y)
@@ -107,7 +107,7 @@ void Snake::snake_move()
 {
     SnakeChunk* reserved_head = head_;
     
-    while (head_ != NULL) 
+    while (head_ != nullptr) 
     {
         snake_chunk_add_speed(head_, speed_);
         head_ = head_->next;
@@ -141,7 +141,7 @@ void Snake::snake_rotate()
     while (head_ != NULL)
     {
         snake_length++;
-        head_ = head->next;
+        head_ = head_->next;
     }
     head_ = reserved_head;
     
@@ -185,14 +185,14 @@ void Snake::snake_grow(std::size_t size)
     SnakeChunk* temp_head = head_;
     SnakeChunk* new_tail_chunk;
     
-    for (u32 i = 0; i < size; i++)
+    for (std::size_t i = 0; i < size; i++)
     {
         new_tail_chunk = (SnakeChunk*)malloc(sizeof(SnakeChunk));
-        new_tail_chunk->next = NULL;
+        new_tail_chunk->next = nullptr;
         new_tail_chunk->type = ChunkType::Tail;
         
         
-        if (tail_ == NULL)
+        if (tail_ == nullptr)
             new_tail_chunk->coord = head_->coord;
         else
             new_tail_chunk->coord = tail_->coord;
@@ -224,7 +224,7 @@ void Snake::snake_grow(std::size_t size)
             case ChunkDirection::None: { break; }
         }
         
-        while (head_->next != NULL)
+        while (head_->next != nullptr)
             head_ = head_->next;
         
 #if defined(SNAKE_DOUBLY_LINKED_LIST)

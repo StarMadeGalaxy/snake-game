@@ -3,6 +3,8 @@
 
 #include <cstddef>
 #include <iostream>
+#include <chrono>
+#include <memory>
 
 #include "snake_types.hpp"
 #include "snake_logic.hpp"
@@ -46,7 +48,7 @@ public:
     std::size_t screen_height_;
     std::size_t screen_width_;
 
-    GameRenderer* renderer;
+    std::unique_ptr<GameRenderer> renderer;
     GameInput* input;
 
     bool platform_active;

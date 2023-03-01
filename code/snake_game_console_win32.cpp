@@ -4,6 +4,7 @@
 #include "snake_types.hpp"
 #include "snake_map.hpp"
 
+#include <memory>
 #include <windows.h>
 #include <stdio.h>
 
@@ -15,7 +16,7 @@ namespace settings
 }
 
 
-u16 console_is_key_pressed(u32 virtual_key_code)
+u16 console_is_key_pressed(i32 virtual_key_code)
 {
     return (GetAsyncKeyState(virtual_key_code) & MSB(u16));
 }
@@ -24,7 +25,6 @@ u16 console_is_key_pressed(u32 virtual_key_code)
 void console_renderer_destroy(GameRenderer* renderer)
 {
     free(renderer->frame_data);
-    free(renderer);
 }
 
 
@@ -128,13 +128,13 @@ void console_render_frame(GameRenderer* renderer)
 
 void IPlatformAPI::renderer_create(void)
 {
-    renderer = (GameRenderer*)malloc(sizeof(GameRenderer));
+    renderer = std::make_unique<GameRenderer>();
     
     std::size_t data_size = screen_height_ * screen_width_;
     
     renderer->frame_data = (CONSOLE_FRAME_TYPE*)malloc(data_size * sizeof(CONSOLE_FRAME_TYPE));
-    renderer->size.height = static_cast<u16>(screen_height_);
-    renderer->size.width = static_cast<u16>(screen_width_);
+    renderer->size.height = screen_height_;
+    renderer->size.width = screen_width_;
     renderer->console_handler = GetStdHandle(STD_OUTPUT_HANDLE);
     
     CONSOLE_SCREEN_BUFFER_INFO cbsi;
@@ -143,22 +143,21 @@ void IPlatformAPI::renderer_create(void)
     renderer->cbsi.dwCursorPosition.X = 0;
     renderer->cbsi.dwCursorPosition.Y += 1;
     
-    console_cursor_hide(renderer);
+    console_cursor_hide(renderer.get());
 }
 
 
 void IPlatformAPI::renderer_destroy(void)
 {
     free(renderer->frame_data);
-    free(renderer);
 }
 
 
 void IPlatformAPI::render_frame(Snake* snake, Map* map)
 {
-    console_cursor_begin_move(renderer);
-    console_make_frame(renderer, snake, map);
-    console_render_frame(renderer);
+    console_cursor_begin_move(renderer.get());
+    console_make_frame(renderer.get(), snake, map);
+    console_render_frame(renderer.get());
 }
 
 
