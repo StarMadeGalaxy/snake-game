@@ -5,19 +5,16 @@
 
 #include "snake_game_platform.hpp"
 
-#include "snake_map.cpp"
-#include "snake_logic.cpp"
-
 #if !defined(GUI_ENABLED) && defined(_WIN32)
 #   include "snake_game_console_win32.cpp"
 #endif // !defined(GUI_ENABLED) && defined(_WIN32)
 
 #if !defined(GUI_ENABLED) && defined(__linux__)
-#   include "snake_renderer"
+#   include "snake_renderer_console_linux.cpp"
 #endif // !defined(GUI_ENABLED) && defined(__linux__)
 
 #if defined(GUI_ENABLED)
 #   include "snake_game_sdl.cpp"
 #endif // defined(GUI_ENABLED)
 
-#endif //SNAKE_GAME_H
+#endif // !defined(SNAKE_GAME_H)

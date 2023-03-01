@@ -1,6 +1,6 @@
 /* date = October 20th 2022 2:05 am */
 
-#ifndef SNAKE_TYPES_H
+#if !defined(SNAKE_TYPES_H)
 #define SNAKE_TYPES_H
 
 #include <cstddef>
@@ -8,28 +8,28 @@
 #include "snake_game_base_types.hpp"
 
 
-typedef enum ChunkDirection
+enum class ChunkDirection
 {
     None, Up, Left, Down, Right
-} ChunkDirection;
+};
 
 
-typedef enum ChunkType
+enum class ChunkType
 {
     Tail, Head, Body, Food, Border, Space
-} ChunkType;
+};
 
 
-typedef enum SnakeState
+enum class SnakeState
 {
     Alive, Dead
-} SnakeState;
+};
 
 
-typedef enum CollisionType
+enum class CollisionType
 {
     NONE_COLLISION, BORDER_COLLISION, BODY_COLLISION, FOOD_COLLISION
-} CollisionType;
+};
 
 
 /* TODO(Venci): Implement key-value data structure to store chunk symbol there */
@@ -52,8 +52,8 @@ struct Coordinates
 
 struct SnakeChunk
 {
-    ChunkDirection direction;
-    ChunkType type;
+    enum class ChunkDirection direction;
+    enum class ChunkType type;
     struct SnakeChunk* next;
     Coordinates coord;
 #if defined(SNAKE_DOUBLY_LINKED_LIST)
@@ -64,27 +64,8 @@ struct SnakeChunk
 
 struct MapChunk
 {
-    ChunkType type;
+    enum class ChunkType type;
     Coordinates coord;
-};
-
-
-struct Snake
-{
-    SnakeChunk* head;
-    SnakeChunk* tail;
-    SnakeState state;
-    u16 speed;
-};
-
-
-struct Map
-{
-    std::size_t height;
-    std::size_t width;
-    MapChunk* ptr;
-    // NOTE(Venci): temp solution
-    MapChunk* food_chunk;
 };
 
 

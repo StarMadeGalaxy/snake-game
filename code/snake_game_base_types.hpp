@@ -1,7 +1,7 @@
 
 /* date = October 20th 2022 1:59 am */
 
-#ifndef BASE_TYPES_H
+#if !defined(BASE_TYPES_H)
 #define BASE_TYPES_H
 
 
@@ -32,8 +32,14 @@ typedef double f64;
 
 #define Assert(expression)
 
+#if defined(DEBUG_MODE)
+#   define DEBUG_LOG(x) do { std::cerr << "DEBUG: " << x << std::endl; } while (0);
+#else
+#   define DEBUG_LOG(x) do {} while(0);
+#endif // defined(DEBUG_MODE)
+
 #if defined(__cplusplus) && defined(_BITSET_)
 # define BITSET_MSB(type) (std::bitset<(BIT_AMOUNT(type))>(MSB(type)))
 #endif /* defined(__cplusplus) && defined(_BITSET_) */
 
-#endif //BASE_TYPES_H
+#endif // !defined(BASE_TYPES_H)

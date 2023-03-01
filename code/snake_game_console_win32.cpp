@@ -15,20 +15,20 @@ namespace settings
 }
 
 
-internal u16 console_is_key_pressed(u32 virtual_key_code)
+u16 console_is_key_pressed(u32 virtual_key_code)
 {
     return (GetAsyncKeyState(virtual_key_code) & MSB(u16));
 }
 
 
-internal void console_renderer_destroy(GameRenderer* renderer)
+void console_renderer_destroy(GameRenderer* renderer)
 {
     free(renderer->frame_data);
     free(renderer);
 }
 
 
-internal void console_cursor_hide(GameRenderer* renderer)
+void console_cursor_hide(GameRenderer* renderer)
 {
     CONSOLE_CURSOR_INFO cc_info;
     GetConsoleCursorInfo(renderer->console_handler, &cc_info);
@@ -39,78 +39,83 @@ internal void console_cursor_hide(GameRenderer* renderer)
 
 #define MAKE_MAP
 #define MAKE_SNAKE
-internal void console_make_frame(GameRenderer* renderer, 
-                                Snake* snake, 
-                                Map* game_map)
+void console_make_frame(GameRenderer* renderer, Snake* snake, Map* game_map)
 {
     // NOTE(Venci): filling renderer data with map
-    for (u16 y = 0; y < game_map->height; y++) 
+    for (u16 y = 0; y < game_map->height(); y++) 
     {
-        for (u16 x = 0; x < game_map->width; x++) 
+        for (u16 x = 0; x < game_map->width(); x++) 
         {
-            u32 index = y * renderer->size.width + x;
-            switch(get_map_chunk(game_map, x, y)->type) 
+            std::size_t index = y * renderer->size.width + x;
+            switch(game_map->get_map_chunk(x, y)->type) 
             {
-                case Space:
+                case ChunkType::Space:
                 {
                     ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = SPACE_CHAR;
                     break;
                 }
-                case Food:
+                case ChunkType::Food:
                 {
                     ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = FOOD_CHAR;
                     break;
                 }
-                case Border:
+                case ChunkType::Border:
                 {
                     ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = BORDER_CHAR;
                     break;
                 }
+                case ChunkType::Body: { break; }
+                case ChunkType::Head: { break; }
+                case ChunkType::Tail: { break; }
             }
         }
     }
     
     // NOTE(Venci): filling renderer data with snake
-    SnakeChunk* temp_chunk = snake->head;
-    while (snake->head != NULL)
+    SnakeChunk* temp_chunk = snake->head();
+    while (snake->head() != NULL)
     {
-        std::size_t index = snake->head->coord.y * renderer->size.width + snake->head->coord.x;
-        switch (snake->head->type)
+        std::size_t index = snake->head()->coord.y * renderer->size.width + snake->head()->coord.x;
+        switch (snake->head()->type)
         {
+            case ChunkType::Body:
             {
                 ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = BODY_CHAR;
                 break;
             }
-            case Head:
+            case ChunkType::Head:
             {
                 ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = HEAD_CHAR;
                 break;
             }
-            case Tail:
+            case ChunkType::Tail:
             {
                 ((CONSOLE_FRAME_TYPE*)renderer->frame_data)[index] = TAIL_CHAR;
                 break;
             }
+            case ChunkType::Border: { break; }
+            case ChunkType::Space: { break; }
+            case ChunkType::Food: { break; }
         }
-        snake->head = snake->head->next;
+        snake->head_next();
     }
-    snake->head = temp_chunk;
+    snake->set_head(temp_chunk);
 }
 
 
-internal void console_cursor_begin_move(GameRenderer* renderer)
+void console_cursor_begin_move(GameRenderer* renderer)
 {
     SetConsoleCursorPosition(renderer->console_handler, renderer->cbsi.dwCursorPosition);
 }
 
 
-internal void console_render_frame(GameRenderer* renderer)
+void console_render_frame(GameRenderer* renderer)
 {
     for (u16 y = 0; y < renderer->size.height; y++)
     {
         for (u16 x = 0; x < renderer->size.width; x++)
         {
-            u32 index = y * renderer->size.width + x;
+            std::size_t index = y * renderer->size.width + x;
             fputc(((char*)renderer->frame_data)[index], stdout);
         }
         fputc('\n', stdout);
@@ -121,9 +126,9 @@ internal void console_render_frame(GameRenderer* renderer)
 // API Implementation
 //
 
-GameRenderer* IPlatformAPI::renderer_create()
+void IPlatformAPI::renderer_create(void)
 {
-    GameRenderer* renderer = (GameRenderer*)malloc(sizeof(GameRenderer));
+    renderer = (GameRenderer*)malloc(sizeof(GameRenderer));
     
     std::size_t data_size = screen_height_ * screen_width_;
     
@@ -139,8 +144,6 @@ GameRenderer* IPlatformAPI::renderer_create()
     renderer->cbsi.dwCursorPosition.Y += 1;
     
     console_cursor_hide(renderer);
-    
-    return renderer;
 }
 
 
@@ -161,7 +164,7 @@ void IPlatformAPI::render_frame(Snake* snake, Map* map)
 
 bool IPlatformAPI::is_key_pressed(InputKeyboardKeys key)
 {
-    u16 virtual_key_code;
+    u16 virtual_key_code{};
 
     switch (key)
     {
@@ -183,6 +186,7 @@ bool IPlatformAPI::is_key_pressed(InputKeyboardKeys key)
     case InputKeyboardKeys::KEYBOARD_SPACE:
         virtual_key_code = VK_SPACE;
         break;
+    case InputKeyboardKeys::KEYBOARD_KEYS_COUNT: { break; }
     }
 
     return static_cast<bool>(GetAsyncKeyState(virtual_key_code) & MSB(u16));

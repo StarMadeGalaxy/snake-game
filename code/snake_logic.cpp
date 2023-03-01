@@ -4,130 +4,156 @@
 #include "snake_map.hpp"
 
 
-internal void snake_chunk_add_speed(SnakeChunk* chunk, u16 speed)
+Snake::Snake(std::size_t start_x, std::size_t start_y)
+{
+    head_ = new SnakeChunk;
+    head_->direction = ChunkDirection::None;
+    head_->coord.x = start_x;
+    head_->coord.y = start_y;
+    head_->next = nullptr;
+    head_->type = ChunkType::Head;
+    state_ = SnakeState::Alive;
+    speed_ = 1;
+    tail_ = nullptr;
+#if defined(SNAKE_DOUBLY_LINKED_LIST)
+    head_->prev = nullptr;
+#endif // defined(SNAKE_DOUBLY_LINKED_LIST)
+}
+
+
+void Snake::snake_chunk_add_speed(SnakeChunk* chunk, std::size_t speed)
 {
     switch (chunk->direction) 
     {
-        case Down: 
+        case ChunkDirection::Down: 
         {
             chunk->coord.y += speed;
             break;
         }
-        case Up:
+        case ChunkDirection::Up:
         {
             chunk->coord.y -= speed;
             break;
         }
-        case Left:
+        case ChunkDirection::Left:
         {
             chunk->coord.x -= speed;
             break;
         }
-        case Right:
+        case ChunkDirection::Right:
         {
             chunk->coord.x += speed;
             break;
         }
+        case ChunkDirection::None: { break; }
     }
 }
 
 
-internal CollisionType snake_collision_check(Snake* snake, Map* map)
+CollisionType Snake::snake_collision_check(Map* map)
 {
-    CollisionType result;
-    for (u16 map_y = 0; map_y < map->height; map_y++)
+    CollisionType result{};
+    for (std::size_t map_y = 0; map_y < map->height(); map_y++)
     {
-        for (u16 map_x = 0; map_x < map->width; map_x++)
+        for (std::size_t map_x = 0; map_x < map->width(); map_x++)
         {
-            MapChunk* test_chunk = get_map_chunk(map, snake->head->coord.x, snake->head->coord.y);
+            MapChunk* test_chunk = map->get_map_chunk(head_->coord.x, head_->coord.y);
             switch (test_chunk->type)
             {
-                case Border:
+                case ChunkType::Border:
                 {
-                    // NOTE(Venci): I really hope that this is legal goto usage
-                    // i've seen usage like that in linux kernel style guide!
-                    result = BORDER_COLLISION;
+                    result = CollisionType::BORDER_COLLISION;
                     goto is_collided;
                 }
-                case Food:
+                case ChunkType::Food:
                 {
-                    result = FOOD_COLLISION;
+                    result = CollisionType::FOOD_COLLISION;
                     goto is_collided;
                 }
+                case ChunkType::Body: { break; }
+                case ChunkType::Head: { break; }
+                case ChunkType::Space: { break; }
+                case ChunkType::Tail: { break; }
             }
         }
     }
     is_collided:
 
-    SnakeChunk* temp_head = snake->head;
+    SnakeChunk* temp_head = head_;
     
-    while (snake->head->next != NULL)
+    while (head_->next != NULL)
     {
-        if (temp_head->coord.x == snake->head->next->coord.x &&
-            temp_head->coord.y == snake->head->next->coord.y)
+        if (temp_head->coord.x == head_->next->coord.x &&
+            temp_head->coord.y == head_->next->coord.y)
         {
-            result = BODY_COLLISION;
+            result = CollisionType::BODY_COLLISION;
             break;
         }
-        snake->head = snake->head->next;
+        head_ = head_->next;
     }
-    snake->head = temp_head;
+    head_ = temp_head;
     
     return result;
 }
 
 
-internal void snake_move(Snake* snake)
+void Snake::die(void)
 {
-    SnakeChunk* reserved_head = snake->head;
-    
-    while (snake->head != NULL) 
-    {
-        snake_chunk_add_speed(snake->head, snake->speed);
-        snake->head = snake->head->next;
-    }
-    snake->head = reserved_head;
+    state_ = SnakeState::Dead;
 }
 
 
-internal void snake_rotate(Snake* snake)
+void Snake::snake_move()
+{
+    SnakeChunk* reserved_head = head_;
+    
+    while (head_ != NULL) 
+    {
+        snake_chunk_add_speed(head_, speed_);
+        head_ = head_->next;
+    }
+    head_ = reserved_head;
+}
+
+
+void Snake::snake_rotate()
 {
     // NOTE(Venci): Change direction at snake's corners
     // TODO(Venci): Think and simplify this code by using doubly-linked snake
 #if defined(SNAKE_DOUBLY_LINKED_LIST)
-    SnakeChunk* reserved_tail = snake->tail;
+    SnakeChunk* reserved_tail = tail_;
     
-    while (snake->tail != NULL)
+    while (tail_ != NULL)
     {
-        if (snake->tail->prev != NULL &&
-            snake->tail->direction != snake->tail->prev->direction)
+        if (tail_->prev != NULL &&
+            tail_->direction != tail_->prev->direction)
         {
-            snake->tail->direction = snake->tail->prev->direction;
+            tail_->direction = tail_->prev->direction;
         }
-        snake->tail = snake->tail->prev;
+        tail_ = tail_->prev;
     }
-    snake->tail = reserved_tail;
+    tail_ = reserved_tail;
 #elif defined(SNAKE_SINGLY_LINKED_LIST)
-    SnakeChunk* reserved_head = snake->head;
+    SnakeChunk* reserved_head = head_;
     
     u32 snake_length = 0;
     
-    while (snake->head != NULL)
+    while (head_ != NULL)
     {
         snake_length++;
-        snake->head = snake->head->next;
+        head_ = head->next;
     }
-    snake->head = reserved_head;
+    head_ = reserved_head;
     
     SnakeChunk** snake_stack = (SnakeChunk**)malloc(sizeof(SnakeChunk*) * (size_t)snake_length);
     
     u32 counter = 0;
-    while (snake->head != NULL)
+    while (head_ != NULL)
     {
-        snake_stack[counter++] = snake->head;
-        snake->head = snake->head->next;
+        snake_stack[counter++] = head_;
+        head_ = head_->next;
     }
-    snake->head = reserved_head;
+    head_ = reserved_head;
     
     for (u32 i = snake_length - 1; i > 0; i--)
     {
@@ -144,7 +170,7 @@ internal void snake_rotate(Snake* snake)
 }
 
 
-internal void snake_grow(Snake* snake, u32 size)
+void Snake::snake_grow(std::size_t size)
 {
     /*
     NOTE(Venci): 
@@ -156,106 +182,98 @@ internal void snake_grow(Snake* snake, u32 size)
         ) Limit size on map size.
     */
     
-    SnakeChunk* temp_head = snake->head;
+    SnakeChunk* temp_head = head_;
     SnakeChunk* new_tail_chunk;
     
     for (u32 i = 0; i < size; i++)
     {
         new_tail_chunk = (SnakeChunk*)malloc(sizeof(SnakeChunk));
         new_tail_chunk->next = NULL;
-        new_tail_chunk->type = Tail;
+        new_tail_chunk->type = ChunkType::Tail;
         
         
-        if (snake->tail == NULL)
-            new_tail_chunk->coord = snake->head->coord;
+        if (tail_ == NULL)
+            new_tail_chunk->coord = head_->coord;
         else
-            new_tail_chunk->coord = snake->tail->coord;
+            new_tail_chunk->coord = tail_->coord;
         
-        new_tail_chunk->direction = snake->head->direction;
+        new_tail_chunk->direction = head_->direction;
         
-        switch (snake->head->direction)
+        switch (head_->direction)
         {
-            case Down:
+            case ChunkDirection::Down:
             {
                 new_tail_chunk->coord.y--;
                 break;
             }
-            case Up:
+            case ChunkDirection::Up:
             {
                 new_tail_chunk->coord.y++;
                 break;
             }
-            case Left:
+            case ChunkDirection::Left:
             {
                 new_tail_chunk->coord.x++;
                 break;
             }
-            case Right:
+            case ChunkDirection::Right:
             {
                 new_tail_chunk->coord.x--;
                 break;
             }
+            case ChunkDirection::None: { break; }
         }
         
-        while (snake->head->next != NULL)
-            snake->head = snake->head->next;
+        while (head_->next != NULL)
+            head_ = head_->next;
         
 #if defined(SNAKE_DOUBLY_LINKED_LIST)
-        new_tail_chunk->prev = snake->head;
+        new_tail_chunk->prev = head_;
 #endif // defined(SNAKE_DOUBLY_LINKED_LIST)
         
-        snake->head->next = new_tail_chunk;
-        snake->tail = new_tail_chunk;
+        head_->next = new_tail_chunk;
+        tail_ = new_tail_chunk;
         
-        if (snake->head->type != Head)
-            snake->head->type = Body;
-        snake->head = temp_head;
+        if (head_->type != ChunkType::Head)
+            head_->type = ChunkType::Body;
+        head_ = temp_head;
     }
 }
 
 
-
-
-internal void snake_init(Snake* snake, 
-                         u16 start_x, 
-                         u16 start_y, 
-                         ChunkDirection start_direction)
+void Snake::set_head(SnakeChunk* new_head)
 {
-    snake->head->direction = start_direction;
-    snake->head->coord.x = start_x;
-    snake->head->coord.y = start_y;
-    snake->head->next = NULL;
-    snake->head->type = Head;
-    snake->state = Alive;
-    snake->speed = 1;
-    snake->tail = NULL;
-#if defined(SNAKE_DOUBLY_LINKED_LIST)
-    snake->head->prev = NULL;
-#endif // defined(SNAKE_DOUBLY_LINKED_LIST)
+    head_ = new_head;
 }
 
 
-internal Snake* snake_alloc(void)
+void Snake::head_next(void)
 {
-    Snake* new_snake = (Snake*)malloc(sizeof(Snake));
-    new_snake->head = (SnakeChunk*)malloc(sizeof(SnakeChunk));
-    return new_snake;
+    head_ = head_->next;
 }
 
 
-internal void snake_free(Snake** snake)
+SnakeChunk* Snake::head() const 
+{
+    return head_;
+}
+
+SnakeState Snake::state() const
+{
+    return state_;
+}
+
+
+Snake::~Snake()
 {
     SnakeChunk* temp_head;
-    Snake* snake_pointer = *snake;
     
-    while (snake_pointer->head != NULL)
+    while (head_ != NULL)
     {
-        temp_head = snake_pointer->head->next;
-        free(snake_pointer->head);
-        snake_pointer->head = temp_head;
+        temp_head = head_->next;
+        delete head_;
+        head_ = temp_head;
     }
-    free(snake_pointer);
-    *snake = NULL;
 }
 
 

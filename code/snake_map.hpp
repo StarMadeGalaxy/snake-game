@@ -4,16 +4,29 @@
 #include "snake_types.hpp"
 
 
-internal u16 get_random_number(u16 lower, u16 upper);
-internal Coordinates food_generate(Map* map);
-internal MapChunk* get_map_chunk(Map* map, u16 x, u16 y);
-internal Map* map_alloc(u16 height, u16 width);
-internal void map_init(Map* map);
-internal void map_free(Map* map);
+template<typename T> 
+T get_random_number(T lower, T upper);
 
-#if defined(DEBUG_MODE)
-internal void spawn_food_coord(Map* map, u16 x, u16 y);
-#endif // defined(DEBUG_MODE)
+
+class Map
+{
+public:
+    Map(std::size_t height_, std::size_t width_);
+    MapChunk* get_map_chunk(std::size_t x, std::size_t y);
+    std::size_t height() const;
+    std::size_t width() const;
+    MapChunk* food_chunk() const;
+    Coordinates food_generate(void);
+    ~Map();
+private:
+    void map_init(void);
+private:
+    std::size_t height_;
+    std::size_t width_;
+    MapChunk* ptr;
+    // NOTE(Venci): temp solution
+    MapChunk* food_chunk_;
+};
 
 
 #endif //SNAKE_MAP_H

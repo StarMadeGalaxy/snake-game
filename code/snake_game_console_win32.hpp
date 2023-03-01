@@ -13,8 +13,8 @@ typedef char CONSOLE_FRAME_TYPE;
 
 struct ConsoleSize
 {
-    u16 height;
-    u16 width;
+    std::size_t height;
+    std::size_t width;
 };
 
 

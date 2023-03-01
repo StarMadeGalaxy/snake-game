@@ -1,4 +1,4 @@
 @echo off
 
-remedybg debug.rdbg
+remedybg ..\build\snake_game_entry.exe
 

@@ -5,105 +5,113 @@
 #include "snake_map.hpp"
 
 
-internal Coordinates food_generate(Map* map)
+template<typename T>
+T get_random_number(T lower, T upper)
+{
+    // std::random_device rd;
+    // std::uniform_int_distribution<T> dist(lower, upper);
+    return (rand() % (upper + 1 - lower) + lower);
+}
+
+
+Coordinates Map::food_generate()
 {
     // NOTE(Venci): -2 due to border and first index is 0
     Coordinates food_coord;
     MapChunk* food_chunk_ptr;
     
     do {
-        food_coord.x = get_random_number(1, map->width - 2);
-        food_coord.y = get_random_number(1, map->height - 2);
-        food_chunk_ptr = get_map_chunk(map, food_coord.x, food_coord.y);
-    } while (food_chunk_ptr->type != Space);
+        food_coord.x = get_random_number<std::size_t>(1, width_ - 2);
+        food_coord.y = get_random_number<std::size_t>(1, height_ - 2);
+        food_chunk_ptr = get_map_chunk(food_coord.x, food_coord.y);
+    } while (food_chunk_ptr->type != ChunkType::Space);
     
-    food_chunk_ptr->type = Food;
-    map->food_chunk = food_chunk_ptr;
+    food_chunk_ptr->type = ChunkType::Food;
+    food_chunk_ = food_chunk_ptr;
     return food_coord;
 }
 
 
-internal u16 get_random_number(u16 lower, u16 upper)
+MapChunk* Map::food_chunk() const 
 {
-    std::random_device rd;
-    std::uniform_int_distribution<u16> dist(lower, upper);
-    return dist(rd);
+    return food_chunk_;
 }
 
 
-internal MapChunk* get_map_chunk(Map* map, u16 x, u16 y)
+std::size_t Map::height() const
 {
-    return &map->ptr[y * map->width + x];
+    return height_;
 }
 
 
-internal Map* map_alloc(u16 height, u16 width)
+std::size_t Map::width() const
 {
-    Map* game_map = (Map*)malloc(sizeof(Map));
-    game_map->ptr = (MapChunk*)malloc((size_t)height * (size_t)width * sizeof(MapChunk*));
-    game_map->height = height;
-    game_map->width = width;
-    return game_map;
+    return width_;
 }
 
 
-internal void map_init(Map* map)
+MapChunk* Map::get_map_chunk(std::size_t x, std::size_t y)
+{
+    return &ptr[y * width_ + x];
+}
+
+
+Map::Map(std::size_t height, std::size_t width) : 
+    height_(height), width_(width)
+{
+    ptr = (MapChunk*)malloc(height * width * sizeof(MapChunk*));
+    map_init();
+}
+
+
+void Map::map_init()
 {
     MapChunk* chunk;
-    for (u16 x = 0; x < map->width; x++)
+    for (std::size_t x = 0; x < width_; x++)
     {
-        chunk = get_map_chunk(map, x, 0);
-        chunk->type = Border;
+        chunk = get_map_chunk(x, 0);
+        chunk->type = ChunkType::Border;
         chunk->coord.y = 0;
         chunk->coord.x = x;
     }
     
-    for (u16 y = 1; y < map->height - 1; y++)
+    for (std::size_t y = 1; y < height_ - 1; y++)
     {
-        chunk = get_map_chunk(map, 0, y);
-        chunk->type = Border;
+        chunk = get_map_chunk(0, y);
+        chunk->type = ChunkType::Border;
         chunk->coord.x = 0;
         chunk->coord.y = y;
         
-        for (u16 x = 1; x < map->width - 1; x++)
+        for (std::size_t x = 1; x < width_ - 1; x++)
         {
-            chunk = get_map_chunk(map, x, y);
-            chunk->type = Space;
+            chunk = get_map_chunk(x, y);
+            chunk->type = ChunkType::Space;
             chunk->coord.x = x;
             chunk->coord.y = y;
         }
-        u16 last_row_x = map->width - 1;
-        chunk = get_map_chunk(map, last_row_x, y);
-        chunk->type = Border;
+        std::size_t last_row_x = width_ - 1;
+        chunk = get_map_chunk(last_row_x, y);
+        chunk->type = ChunkType::Border;
         chunk->coord.x = last_row_x;
         chunk->coord.y = y;
     }
     
-    for (u16 x = 0; x < map->width; x++)
+    for (size_t x = 0; x < width_; x++)
     {
-        u16 last_col_y = map->height - 1;
-        chunk = get_map_chunk(map, x, last_col_y);
-        chunk->type = Border;
+        std::size_t last_col_y = height_ - 1;
+        chunk = get_map_chunk(x, last_col_y);
+        chunk->type = ChunkType::Border;
         chunk->coord.x = x;
         chunk->coord.y = last_col_y;
     }
     // NOTE(Venci): temp solution
-    map->food_chunk = map->ptr;
+    food_chunk_ = ptr;
 }
 
 
-internal void map_free(Map* map)
+Map::~Map()
 {
-    free(map->ptr);
+    free(ptr);
 }
 
-
-#if defined(DEBUG_MODE)
-internal void spawn_food_coord(Map* map, u16 x, u16 y)
-{
-    MapChunk* food_chunk_ptr = get_map_chunk(map, x, y);
-    food_chunk_ptr->type = Food;
-    map->food_chunk = food_chunk_ptr;
-}
-#endif // defined(DEBUG_MODE)
 
