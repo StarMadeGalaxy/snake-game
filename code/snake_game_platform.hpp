@@ -65,7 +65,7 @@ private:
 };
 
 
-void game_render_update(IPlatformAPI* game_platform, 
+inline void game_render_update(IPlatformAPI* game_platform, 
                                  GameInput* input, Snake* snake, 
                                  Map* game_map)          
 {

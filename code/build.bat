@@ -22,6 +22,7 @@ SET ENTRY_FILE=%SRC%\code\snake_game_entry.cpp
 SET ENTRY_FILE=%ENTRY_FILE% %SRC%\code\snake_logic.cpp
 SET ENTRY_FILE=%ENTRY_FILE% %SRC%\code\snake_map.cpp
 
+:: /fsanitize=address
 SET CL_OPTS=/Zi /W4 /nologo /Od /EHsc /std:c++17
 
 SET COMMON_LINK_FLAGS=/opt:ref user32.lib

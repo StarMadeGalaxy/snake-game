@@ -59,7 +59,7 @@ MapChunk* Map::get_map_chunk(std::size_t x, std::size_t y)
 Map::Map(std::size_t height, std::size_t width) : 
     height_(height), width_(width)
 {
-    ptr = (MapChunk*)malloc(height * width * sizeof(MapChunk*));
+    ptr = (MapChunk*)malloc(height * width * sizeof(MapChunk));
     map_init();
 }
 

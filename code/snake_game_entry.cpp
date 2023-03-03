@@ -72,9 +72,9 @@ int main(int arg_count, char* arg_array[])
             game_input.keyboard_keys[INDEX(InputKeyboardKeys::KEYBOARD_SPACE)] = GameKeyState::BUTTON_DOWN;
         }
 #endif // defined(DEBUG_MODE)
+
         game_render_update(platform_api.get(), &game_input, snake.get(), game_map.get());
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
-
     return EXIT_SUCCESS;
 }
