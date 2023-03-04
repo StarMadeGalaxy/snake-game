@@ -9,8 +9,7 @@
 #include <stdio.h>
 
 
-namespace settings
-{
+namespace {
     constexpr std::size_t height = 15; 
     constexpr std::size_t width = 25;
 }
@@ -193,7 +192,7 @@ bool IPlatformAPI::is_key_pressed(InputKeyboardKeys key)
 
 
 IPlatformAPI::IPlatformAPI() :
-        screen_height_(settings::height), screen_width_(settings::width) 
+        screen_height_(height), screen_width_(width) 
 {
     platform_active = true;
     renderer_create();

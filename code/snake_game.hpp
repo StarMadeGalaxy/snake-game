@@ -1,5 +1,4 @@
 /* date = October 28th 2022 0:36 am */
-
 #if !defined(SNAKE_GAME_H)
 #define SNAKE_GAME_H
 

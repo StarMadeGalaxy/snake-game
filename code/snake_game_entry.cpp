@@ -7,7 +7,25 @@
 #include <memory>
 
 
+int main(int arg_count, char* arg_array[])
+{
+    (void)arg_count;
+    (void)arg_array;
 
+    std::unique_ptr<IPlatformAPI> platform_api = std::make_unique<IPlatformAPI>();
+
+    std::unique_ptr<Map> game_map = std::make_unique<Map>(platform_api->screen_height_, 
+                                                          platform_api->screen_width_);
+    std::unique_ptr<Snake> snake = std::make_unique<Snake>(platform_api->screen_width_ / 2,
+                                                           platform_api->screen_height_ / 2);
+    GameInput game_input;
+    
+    game_render_update(platform_api.get(), &game_input, snake.get(), game_map.get());
+    
+    return EXIT_SUCCESS;
+}
+
+#if 0
 int main(int arg_count, char* arg_array[])
 {
     (void)arg_count;
@@ -78,3 +96,4 @@ int main(int arg_count, char* arg_array[])
     }
     return EXIT_SUCCESS;
 }
+#endif

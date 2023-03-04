@@ -5,20 +5,28 @@
 #define BASE_TYPES_H
 
 
-typedef signed char i8;
-typedef signed short int i16;
-typedef signed int i32;
-typedef signed long long int i64;
+using i8 = signed char;
+using i16 = signed short int;
+using i32 = signed int;
+using i64 = signed long long int;
 
-typedef unsigned char u8;
-typedef unsigned short int u16;
-typedef unsigned int u32;
-typedef unsigned long long int u64;
+using u8 = unsigned char;
+using u16 = unsigned short int;
+using u32 = unsigned int;
+using u64 = unsigned long long int;
 
-typedef signed char b8;
+using b8 = signed char;
 
-typedef float f32;
-typedef double f64;
+using f32 = float;
+using f64 = double;
+
+#define ENDL '\n'
+
+#if defined(interface)
+#   undef interface
+#else
+#   define interface class
+#endif // defined(interface)
 
 #define internal static
 #define global static
@@ -26,14 +34,14 @@ typedef double f64;
 
 #define MSB(type) (1 << ((sizeof(type) * 8) - 1))
 #define BIT_AMOUNT(type) (sizeof(type) * 8)
-#define RAND_RANGE(low, high) (((u16)rand() % (high - low + 1)) + low)
+#define RAND_RANGE(low, high) ((rand() % (high - low + 1)) + low)
 #define COORD_INDEX(x, y, width) (y * width + x)
 #define INDEX(x) (static_cast<std::size_t>(x))
 
 #define Assert(expression)
 
 #if defined(DEBUG_MODE)
-#   define DEBUG_LOG(x) do { std::cerr << "DEBUG: " << x << std::endl; } while (0);
+#   define DEBUG_LOG(x) do { std::cout << "DEBUG: " << x << std::endl; } while (0);
 #else
 #   define DEBUG_LOG(x) do {} while(0);
 #endif // defined(DEBUG_MODE)
