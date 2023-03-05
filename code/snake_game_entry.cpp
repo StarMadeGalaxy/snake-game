@@ -7,11 +7,10 @@
 #include <memory>
 
 
-int main(int arg_count, char* arg_array[])
+int main(int argc, char* argv[])
 {
-    (void)arg_count;
-    (void)arg_array;
-
+    (void)argc;
+    (void)argv;
     std::unique_ptr<IPlatformAPI> platform_api = std::make_unique<IPlatformAPI>();
 
     std::unique_ptr<Map> game_map = std::make_unique<Map>(platform_api->screen_height_, 
@@ -21,6 +20,7 @@ int main(int arg_count, char* arg_array[])
     GameInput game_input;
     
     game_render_update(platform_api.get(), &game_input, snake.get(), game_map.get());
+    std::this_thread::sleep_for(std::chrono::minutes(50));
     
     return EXIT_SUCCESS;
 }

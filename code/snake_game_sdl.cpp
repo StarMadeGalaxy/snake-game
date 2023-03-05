@@ -1,14 +1,8 @@
-#include <stdlib.h>
-#if defined(COMPILER_KNOW_WHERE_SDL)
-#   include <SDL.h>
-#else
-#   include "../vendor/SDL2/include/SDL.h"
-#endif // defined(COMPILER_KNOW_WHERE_SDL)
-
-#include "snake_game_platform.hpp"
-
 #include <cstdlib>
 #include <iostream>
+
+#include "snake_game_platform.hpp"
+#include "../vendor/SDL2/include/SDL.h"
 
 
 namespace {
@@ -74,7 +68,7 @@ void IPlatformAPI::render_frame(Snake *snake, Map *map)
         NULL, SDL_MapRGB(renderer->surface->format, 0xFF, 0xFF, 0xFF));
 
     SDL_UpdateWindowSurface(renderer->window);
-    window_stay_up();
+    //window_stay_up();
 }
 
 

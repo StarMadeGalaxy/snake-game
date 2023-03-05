@@ -3,7 +3,6 @@
 #define SNAKE_GAME_H
 
 #include "snake_game_platform.hpp"
-
 #if !defined(GUI_ENABLED) && defined(_WIN32)
 #   include "snake_game_console_win32.cpp"
 #endif // !defined(GUI_ENABLED) && defined(_WIN32)
@@ -13,6 +12,7 @@
 #endif // !defined(GUI_ENABLED) && defined(__linux__)
 
 #if defined(GUI_ENABLED)
+#   define SDL_MAIN_HANDLED
 #   include "snake_game_sdl.cpp"
 #endif // defined(GUI_ENABLED)
 

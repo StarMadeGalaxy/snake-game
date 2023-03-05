@@ -42,7 +42,7 @@ struct GameInput
 struct GameRenderer;
 
 
-interface IPlatformAPI
+platform_interface IPlatformAPI
 {
 public:
     std::size_t screen_height_;

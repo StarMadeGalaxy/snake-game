@@ -22,11 +22,7 @@ using f64 = double;
 
 #define ENDL '\n'
 
-#if defined(interface)
-#   undef interface
-#else
-#   define interface class
-#endif // defined(interface)
+#define platform_interface class
 
 #define internal static
 #define global static
